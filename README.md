@@ -18,3 +18,5 @@ and will give stats on either game over time.<br>
 I would like to add a list of games played and I would like to add games to a **favourites** list
 - *user Story for Viewing list y* <br>
 I would like to see a list of my previous games results for a given game.
+- I would like to see my highscore for the game
+- 
