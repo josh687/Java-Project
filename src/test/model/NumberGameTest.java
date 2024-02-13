@@ -6,16 +6,16 @@ import ui.MemoryApp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GameTest {
-    private Game game;
+public class NumberGameTest {
+    private NumberGame game;
 
     void runBefore() {
-        game = new Game();
+        game = new NumberGame();
     }
 
     @Test
     void testPlayGame() {
         System.out.println(game.getNumForLevel());
-
+//        assertTrue(game.getNumForLevel() > 0 && game.getNumForLevel() < 100);
     }
 }
