@@ -4,17 +4,20 @@ import java.util.Random;
 import java.lang.Math;
 
 public class NumberGame extends Game {
-    private int highscore;
+
 
 
     private int memNum;
 
+
     public NumberGame() {
-        this.highscore = 0;
+        super();
 
         memNum = 0;
 
     }
+
+
 
     public int getNumForLevel() {
         Random random = new Random();

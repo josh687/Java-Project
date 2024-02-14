@@ -14,7 +14,7 @@ public class Game {
     }
 
     public void resetGame() {
-        newHighscore();
+        highscore = 0;
         level = 1;
     }
 

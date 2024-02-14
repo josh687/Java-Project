@@ -9,6 +9,8 @@ public class TypingGame extends Game {
 
     public TypingGame() {
         super();
+        scentence = "";
+
     }
 
     public String getScentence() {
@@ -53,5 +55,8 @@ public class TypingGame extends Game {
         }
         return scentence;
 
+
     }
+
+
 }
