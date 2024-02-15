@@ -2,11 +2,11 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import model.NumberGame;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NumberGameTest {
-    private Game game;
+    private NumberGame game;
 
     @BeforeEach
     void runBefore() {
@@ -19,6 +19,7 @@ public class NumberGameTest {
         assertEquals(1, game.getLevel());
         game.nextLevel();
         assertEquals(2, game.getLevel());
+        assertTrue(game.getNumForLevel() > 100 && game.getNumForLevel() < 10000);
 
     }
 }

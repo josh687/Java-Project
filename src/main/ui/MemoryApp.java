@@ -59,7 +59,7 @@ public class MemoryApp {
         input = new Scanner(System.in);
         input.useDelimiter("\n");
         typer = new TypingGame();
-        profiles = new ArrayList<Profile>();
+        profiles = new ArrayList<>();
     }
 
     private void displayMenu() {
@@ -104,8 +104,6 @@ public class MemoryApp {
         System.out.println(("Type in what profile you want to access"));
         for (Profile prof : profiles) {
             System.out.println(prof.getName());
-//            System.out.println(prof.getHighScore());
-//            System.out.println(prof.getTypeHighScore());
         }
         String wantToAccessProfile = input.next();
         Profile accessedProfile = profiles.get(getProfPosition(wantToAccessProfile));
@@ -160,27 +158,6 @@ public class MemoryApp {
         }
 
     }
-
-
-    public boolean findProf(String name) {
-        for (Profile profs : profiles) {
-            if (profs.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Profile getProf(String name) {
-        for (Profile profs : profiles) {
-            if (profs.getName().equals(name)) {
-                return profs;
-            }
-        }
-        Profile profi = new Profile(name);
-        return profi;
-    }
-
 
 
     public int getProfPosition(String name) {

@@ -1,8 +1,10 @@
 package model;
 
-import java.util.ArrayList;
+
+import java.util.Arrays;
 import java.util.Random;
-import java.lang.Math;
+import java.util.List;
+
 
 public class TypingGame extends Game {
     String scentence;
@@ -15,34 +17,8 @@ public class TypingGame extends Game {
 
     public String getScentence() {
         scentence = "";
-        ArrayList<String> letters = new ArrayList<String>();
-        letters.add("a");
-        letters.add("b");
-        letters.add("c");
-        letters.add("d");
-        letters.add("e");
-        letters.add("f");
-        letters.add("g");
-        letters.add("h");
-        letters.add("i");
-        letters.add("j");
-        letters.add("k");
-        letters.add("l");
-        letters.add("m");
-        letters.add("n");
-        letters.add("o");
-        letters.add("p");
-        letters.add("q");
-        letters.add("r");
-        letters.add("s");
-        letters.add("t");
-        letters.add("u");
-        letters.add("v");
-        letters.add("w");
-        letters.add("x");
-        letters.add("y");
-        letters.add("z");
-        letters.add("#");
+        List<String> letters = Arrays.asList("q", "w", "e", "r", "t", "y", "y", "u", "i", "p", "o",
+                "a", "s", "d", "f", "g", "h", "j", "k", "l","z","x","c","v","b","n","m");
 
 
         for (int c = 1; c < super.getLevel() + 1; c++) {
