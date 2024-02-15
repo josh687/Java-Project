@@ -28,24 +28,21 @@ public class Profile {
         typeGames.add(game);
     }
 
-    public void newHighScoreNum() {
+    public void newHighScoreNum(int val) {
 
-        for (NumberGame gamers : numGames) {
-            if (gamers.getHighScore() > numHighScore) {
-                numHighScore = gamers.getHighScore();
-            }
+        if (val > numHighScore) {
+            numHighScore = val;
+
         }
     }
 
 
 
 
-    public void newHighScoreType() {
+    public void newHighScoreType(int val) {
 
-        for (TypingGame gamers : typeGames) {
-            if (gamers.getHighScore() > typeHighScore) {
-                typeHighScore = gamers.getHighScore();
-            }
+        if (val > typeHighScore) {
+            typeHighScore = val;
         }
     }
 

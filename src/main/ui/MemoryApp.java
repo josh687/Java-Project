@@ -109,8 +109,8 @@ public class MemoryApp {
         }
         String wantToAccessProfile = input.next();
         Profile accessedProfile = profiles.get(getProfPosition(wantToAccessProfile));
-        accessedProfile.newHighScoreNum();
-        accessedProfile.newHighScoreType();
+
+
         System.out.println("the Number Highscore For this profile is " + accessedProfile.getHighScore());
         System.out.println("the Typing Highscore For this profile is " + accessedProfile.getTypeHighScore());
 
@@ -125,12 +125,12 @@ public class MemoryApp {
         if (getProfPosition(prof) >= 0) {
             Profile profToAdd = profiles.get(getProfPosition(prof));
             profToAdd.addTypeGame(typer);
-            profToAdd.newHighScoreType();
+            profToAdd.newHighScoreType(typer.getLevel());
             typer.resetGame();
         } else {
             Profile profToAdd = new Profile(prof);
             profToAdd.addTypeGame(typer);
-            profToAdd.newHighScoreType();
+            profToAdd.newHighScoreType(typer.getLevel());
             profiles.add(profToAdd);
             typer = new TypingGame();
         }
@@ -146,13 +146,14 @@ public class MemoryApp {
         if (getProfPosition(prof) >= 0) {
             Profile profToAdd = profiles.get(getProfPosition(prof));
             profToAdd.addNumGame(game);
-            profToAdd.newHighScoreNum();
+            profToAdd.newHighScoreNum(game.getLevel());
+
 
             game.resetGame();
         } else {
             Profile profToAdd = new Profile(prof);
             profToAdd.addNumGame(game);
-            profToAdd.newHighScoreNum();
+            profToAdd.newHighScoreNum(game.getLevel());
             profiles.add(profToAdd);
 
             game = new NumberGame();
