@@ -17,6 +17,7 @@ public class Game {
         highscore = 0;
         level = 1;
     }
+
     //Increases Level by one
     public void nextLevel() {
         level = level + 1;

@@ -14,6 +14,7 @@ public class TypingGame extends Game {
         scentence = "";
 
     }
+
     // Generates a string with string length = level
     public String getScentence() {
         scentence = "";
