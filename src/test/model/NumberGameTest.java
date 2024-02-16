@@ -17,6 +17,7 @@ public class NumberGameTest {
     @Test
     void testPlayGame() {
         assertEquals(1, game.getLevel());
+        assertEquals(0,game.getHighScore());
         game.nextLevel();
         assertEquals(2, game.getLevel());
         assertTrue(game.getNumForLevel() > 10 && game.getNumForLevel() < 100);
@@ -28,6 +29,9 @@ public class NumberGameTest {
         game.nextLevel();
         game.nextLevel();
         game.nextLevel();
+        game.newHighscore();
+        assertEquals(4,game.getHighScore());
+        game.resetLevel();
         game.newHighscore();
         assertEquals(4,game.getHighScore());
 

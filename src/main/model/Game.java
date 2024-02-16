@@ -18,6 +18,10 @@ public class Game {
         level = 1;
     }
 
+    public void resetLevel() {
+        level = 1;
+    }
+
     //Increases Level by one
     public void nextLevel() {
         level = level + 1;
