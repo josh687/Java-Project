@@ -3,7 +3,7 @@ package ui;
 import model.NumberGame;
 import model.Profile;
 import model.TypingGame;
-
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -39,6 +39,7 @@ public class MemoryApp {
 
         System.out.println("\nGoodbye!");
     }
+
     // Prints out starting options for the game
     private void processCommand(String command) {
         if (command.equals("p")) {
@@ -53,6 +54,7 @@ public class MemoryApp {
             System.out.println("Selection not valid...");
         }
     }
+
     //Initializes the fields
     private void init() {
         game = new NumberGame();
@@ -74,6 +76,7 @@ public class MemoryApp {
     private void playTypingGame() {
         String scen = typer.getScentence();
         System.out.println(scen);
+
         String in = input.next();
         if (scen.equals(in)) {
             typer.nextLevel();
@@ -89,7 +92,6 @@ public class MemoryApp {
     private void playGame() {
         int rand = game.getNumForLevel();
         System.out.println(rand);
-
         int num = input.nextInt();
         if (num == rand) {
             game.nextLevel();
@@ -98,11 +100,13 @@ public class MemoryApp {
             looseGameNumber();
 
         }
-
-
     }
 
-    // Displays user stats depending on what user wants
+
+
+
+
+// Displays user stats depending on what user wants
     public void accessProfiles() {
         System.out.println(("Type in what profile you want to access"));
         for (Profile prof : profiles) {
@@ -131,6 +135,7 @@ public class MemoryApp {
         }
 
     }
+
     //Effects Either adds typing game to old profile, or adds game to a new created profile
     public void looseGameTyper() {
         System.out.println("you loose");

@@ -26,6 +26,8 @@ public class TypingGameTest {
         game.resetGame();
         assertEquals(1,game.getLevel());
         assertEquals(0,game.getHighScore());
+        assertEquals(1, (game.getScentence()).length());
+
 
 
     }
