@@ -14,7 +14,7 @@ public class MemoryApp {
     private TypingGame typer;
     private ArrayList<Profile> profiles;
 
-// some code from TellerApp from CPSC 210
+    // some code from TellerApp from CPSC 210
     public MemoryApp() {
         runGame();
     }
@@ -39,7 +39,7 @@ public class MemoryApp {
 
         System.out.println("\nGoodbye!");
     }
-
+    // Prints out starting options for the game
     private void processCommand(String command) {
         if (command.equals("p")) {
             playGame();
@@ -53,7 +53,7 @@ public class MemoryApp {
             System.out.println("Selection not valid...");
         }
     }
-
+    //Initializes the fields
     private void init() {
         game = new NumberGame();
         input = new Scanner(System.in);
@@ -70,6 +70,7 @@ public class MemoryApp {
         System.out.println("\tq -> quit");
     }
 
+    //EFFECTS: adds 1 level to typing game if user wins, and goes to next level, otherwise looseGameTyper()
     private void playTypingGame() {
         String scen = typer.getScentence();
         System.out.println(scen);
@@ -84,9 +85,11 @@ public class MemoryApp {
 
     }
 
+    //EFFECTS: adds 1 level to Number game if user wins, and goes to next level, otherwise LoosGameNumber()
     private void playGame() {
         int rand = game.getNumForLevel();
         System.out.println(rand);
+
         int num = input.nextInt();
         if (num == rand) {
             game.nextLevel();
@@ -99,7 +102,7 @@ public class MemoryApp {
 
     }
 
-
+    // Displays user stats depending on what user wants
     public void accessProfiles() {
         System.out.println(("Type in what profile you want to access"));
         for (Profile prof : profiles) {
@@ -107,14 +110,28 @@ public class MemoryApp {
         }
         String wantToAccessProfile = input.next();
         Profile accessedProfile = profiles.get(getProfPosition(wantToAccessProfile));
+        System.out.println("\nSelect from:");
+        System.out.println("\th -> get High Scores");
+        System.out.println("\tv -> view all games scores");
+        String option = input.next();
+        if (option.equals("h")) {
 
+            System.out.println("the Number Highscore For this profile is " + accessedProfile.getHighScore());
+            System.out.println("the Typing Highscore For this profile is " + accessedProfile.getTypeHighScore());
+        } else if (option.equals("v")) {
+            System.out.println("Here Are the scores for typing Games");
+            for (TypingGame game1 : accessedProfile.getTypeGames()) {
+                System.out.println(game1.getLevel());
+            }
 
-        System.out.println("the Number Highscore For this profile is " + accessedProfile.getHighScore());
-        System.out.println("the Typing Highscore For this profile is " + accessedProfile.getTypeHighScore());
-
+            System.out.println("Here Are the scores for Number Games");
+            for (NumberGame game2 : accessedProfile.getNumGames()) {
+                System.out.println(game2.getLevel());
+            }
+        }
 
     }
-
+    //Effects Either adds typing game to old profile, or adds game to a new created profile
     public void looseGameTyper() {
         System.out.println("you loose");
         System.out.println("your score was " + typer.getLevel());
@@ -124,7 +141,7 @@ public class MemoryApp {
             Profile profToAdd = profiles.get(getProfPosition(prof));
             profToAdd.addTypeGame(typer);
             profToAdd.newHighScoreType(typer.getLevel());
-            typer.resetGame();
+            typer = new TypingGame();
         } else {
             Profile profToAdd = new Profile(prof);
             profToAdd.addTypeGame(typer);
@@ -136,6 +153,7 @@ public class MemoryApp {
 
     }
 
+    //Effects Either adds Number game to old profile, or adds game to a new created profile
     public void looseGameNumber() {
         System.out.println("you loose");
         System.out.println("your score was " + game.getLevel());
@@ -147,7 +165,7 @@ public class MemoryApp {
             profToAdd.newHighScoreNum(game.getLevel());
 
 
-            game.resetGame();
+            game = new NumberGame();
         } else {
             Profile profToAdd = new Profile(prof);
             profToAdd.addNumGame(game);
@@ -159,7 +177,7 @@ public class MemoryApp {
 
     }
 
-
+    //Finds where in the list of profile a peticular profile is, returns -1 if there is no profile.
     public int getProfPosition(String name) {
         int count = 0;
         for (Profile prof : profiles) {

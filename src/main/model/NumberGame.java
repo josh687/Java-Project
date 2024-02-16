@@ -18,7 +18,7 @@ public class NumberGame extends Game {
     }
 
 
-
+    //generates a random Number with digits= level
     public int getNumForLevel() {
         Random random = new Random();
         memNum =  random.nextInt(getMax()) + getMin();

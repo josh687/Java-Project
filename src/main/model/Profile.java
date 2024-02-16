@@ -55,6 +55,14 @@ public class Profile {
         return typeHighScore;
     }
 
+    public ArrayList<TypingGame> getTypeGames() {
+        return typeGames;
+    }
+
+    public ArrayList<NumberGame> getNumGames() {
+        return numGames;
+    }
+
 
 
     public String getName() {
