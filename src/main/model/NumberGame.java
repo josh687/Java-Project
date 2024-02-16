@@ -29,13 +29,13 @@ public class NumberGame extends Game {
 
 
     private int getMax() {
-        double max = Math.pow(10,super.getLevel() + 1);
+        double max = Math.pow(10,super.getLevel());
         int intmax = (int)max;
         return intmax;
     }
 
     private int getMin() {
-        double min = Math.pow(10,super.getLevel());
+        double min = Math.pow(10,super.getLevel() - 1);
         int intmin = (int)min;
         return intmin;
     }

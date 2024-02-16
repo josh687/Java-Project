@@ -14,7 +14,7 @@ public class MemoryApp {
     private TypingGame typer;
     private ArrayList<Profile> profiles;
 
-
+// some code from TellerApp from CPSC 210
     public MemoryApp() {
         runGame();
     }

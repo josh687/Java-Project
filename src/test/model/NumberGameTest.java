@@ -19,7 +19,13 @@ public class NumberGameTest {
         assertEquals(1, game.getLevel());
         game.nextLevel();
         assertEquals(2, game.getLevel());
-        assertTrue(game.getNumForLevel() > 100 && game.getNumForLevel() < 10000);
+        assertTrue(game.getNumForLevel() > 10 && game.getNumForLevel() < 100);
+        game.newHighscore();
+        assertEquals(2,game.getHighScore());
+        game.resetGame();
+        assertEquals(1, game.getLevel());
+        assertTrue(game.getNumForLevel() > 1 && game.getNumForLevel() < 10);
+
 
     }
 }
