@@ -15,7 +15,7 @@ public class TypingGame extends Game {
 
     }
     //MODIFIES :This
-    // EFFECTS :Generates a string with string length = level
+    // EFFECTS :Generates a  string with string length = level
     public String getScentence() {
         scentence = "";
         List<String> letters = Arrays.asList("q", "w", "e", "r", "t", "y", "y", "u", "i", "p", "o",
