@@ -9,7 +9,7 @@ public class NumberGame extends Game {
 
     private int memNum;
 
-
+    //EFFECTS: Initializes memNum=0, makes a game with level=0, highscore =0.
     public NumberGame() {
         super();
 
@@ -18,7 +18,7 @@ public class NumberGame extends Game {
     }
 
 
-    //generates a random Number with digits= level
+    //EFFECTS: Genereates a Random Number for the level
     public int getNumForLevel() {
         Random random = new Random();
         memNum =  random.nextInt(getMax()) + getMin();

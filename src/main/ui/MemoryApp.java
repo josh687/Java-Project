@@ -15,10 +15,15 @@ public class MemoryApp {
     private ArrayList<Profile> profiles;
 
     // some code from TellerApp from CPSC 210
+
+    //Runs the application
     public MemoryApp() {
         runGame();
     }
 
+
+    //Modifies: This
+    //EFFECTS: Processess user input
     public void runGame() {
         boolean keepGoing = true;
         String command = null;
@@ -40,7 +45,7 @@ public class MemoryApp {
         System.out.println("\nGoodbye!");
     }
 
-    // Prints out starting options for the game
+    // EFFECTS: runs the operation depending on user input
     private void processCommand(String command) {
         if (command.equals("p")) {
             playGame();
@@ -55,7 +60,7 @@ public class MemoryApp {
         }
     }
 
-    //Initializes the fields
+    //EFFECTS :Initializes the games and fields
     private void init() {
         game = new NumberGame();
         input = new Scanner(System.in);
@@ -71,7 +76,7 @@ public class MemoryApp {
         System.out.println("\ta -> Access profiles");
         System.out.println("\tq -> quit");
     }
-
+    //MODIFIES: THIS
     //EFFECTS: adds 1 level to typing game if user wins, and goes to next level, otherwise looseGameTyper()
     private void playTypingGame() {
         String scen = typer.getScentence();
@@ -87,7 +92,7 @@ public class MemoryApp {
         }
 
     }
-
+    //MODIFIES: THIS
     //EFFECTS: adds 1 level to Number game if user wins, and goes to next level, otherwise LoosGameNumber()
     private void playGame() {
         int rand = game.getNumForLevel();
@@ -135,7 +140,7 @@ public class MemoryApp {
         }
 
     }
-
+    //MODIFIES: this
     //Effects Either adds typing game to old profile, or adds game to a new created profile
     public void looseGameTyper() {
         System.out.println("you loose");
@@ -157,7 +162,7 @@ public class MemoryApp {
 
 
     }
-
+    //MODIFIES: this
     //Effects Either adds Number game to old profile, or adds game to a new created profile
     public void looseGameNumber() {
         System.out.println("you loose");
