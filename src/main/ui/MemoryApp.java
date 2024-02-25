@@ -76,11 +76,13 @@ public class MemoryApp {
         System.out.println("\ta -> Access profiles");
         System.out.println("\tq -> quit");
     }
+
     //MODIFIES: THIS
     //EFFECTS: adds 1 level to typing game if user wins, and goes to next level, otherwise looseGameTyper()
     private void playTypingGame() {
         String scen = typer.getScentence();
         System.out.println(scen);
+        printAfterLevelSecondsTyper();
 
         String in = input.next();
         if (scen.equals(in)) {
@@ -92,11 +94,13 @@ public class MemoryApp {
         }
 
     }
+
     //MODIFIES: THIS
     //EFFECTS: adds 1 level to Number game if user wins, and goes to next level, otherwise LoosGameNumber()
     private void playGame() {
         int rand = game.getNumForLevel();
         System.out.println(rand);
+        printAfterLevelSeconds();
         int num = input.nextInt();
         if (num == rand) {
             game.nextLevel();
@@ -107,39 +111,73 @@ public class MemoryApp {
         }
     }
 
+    //effects; Delays program in terminal based on level
+    public void printAfterLevelSeconds() {
+        try {
+
+            Thread.sleep(100 + game.getLevel() * 500);
+
+
+            System.out.println("\n\n\n\n\n\n\n");
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    //effects; Delays program in terminal based on level
+    public void printAfterLevelSecondsTyper() {
+        try {
+
+            Thread.sleep(100 + typer.getLevel() * 500);
+
+
+            System.out.println("\n\n\n\n\n\n\n");
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+
 
 
 
 
 // Displays user stats depending on what user wants
+    @SuppressWarnings("methodlength")
     public void accessProfiles() {
-        System.out.println(("Type in what profile you want to access"));
-        for (Profile prof : profiles) {
-            System.out.println(prof.getName());
-        }
-        String wantToAccessProfile = input.next();
-        Profile accessedProfile = profiles.get(getProfPosition(wantToAccessProfile));
-        System.out.println("\nSelect from:");
-        System.out.println("\th -> get High Scores");
-        System.out.println("\tv -> view all games scores");
-        String option = input.next();
-        if (option.equals("h")) {
 
-            System.out.println("the Number Highscore For this profile is " + accessedProfile.getHighScore());
-            System.out.println("the Typing Highscore For this profile is " + accessedProfile.getTypeHighScore());
-        } else if (option.equals("v")) {
-            System.out.println("Here Are the scores for typing Games");
-            for (TypingGame game1 : accessedProfile.getTypeGames()) {
-                System.out.println(game1.getLevel());
+
+        if (profiles.isEmpty()) {
+            System.out.println("play a game with a profile first");
+        } else {
+            System.out.println(("Type in what profile you want to access"));
+            for (Profile prof : profiles) {
+                System.out.println(prof.getName());
             }
-
-            System.out.println("Here Are the scores for Number Games");
-            for (NumberGame game2 : accessedProfile.getNumGames()) {
-                System.out.println(game2.getLevel());
+            String wantToAccessProfile = input.next();
+            Profile accessedProfile = profiles.get(getProfPosition(wantToAccessProfile));
+            System.out.println("\nSelect from:");
+            System.out.println("\th -> get High Scores");
+            System.out.println("\tv -> view all games scores");
+            String option = input.next();
+            if (option.equals("h")) {
+                System.out.println("the Number Highscore For this profile is " + accessedProfile.getHighScore());
+                System.out.println("the Typing Highscore For this profile is " + accessedProfile.getTypeHighScore());
+            } else if (option.equals("v")) {
+                System.out.println("Here Are the scores for typing Games");
+                for (TypingGame game1 : accessedProfile.getTypeGames()) {
+                    System.out.println(game1.getLevel());
+                }
+                System.out.println("Here Are the scores for Number Games");
+                for (NumberGame game2 : accessedProfile.getNumGames()) {
+                    System.out.println(game2.getLevel());
+                }
             }
         }
-
     }
+
     //MODIFIES: this
     //Effects Either adds typing game to old profile, or adds game to a new created profile
     public void looseGameTyper() {
@@ -162,6 +200,7 @@ public class MemoryApp {
 
 
     }
+
     //MODIFIES: this
     //Effects Either adds Number game to old profile, or adds game to a new created profile
     public void looseGameNumber() {
@@ -173,8 +212,6 @@ public class MemoryApp {
             Profile profToAdd = profiles.get(getProfPosition(prof));
             profToAdd.addNumGame(game);
             profToAdd.newHighScoreNum(game.getLevel());
-
-
             game = new NumberGame();
         } else {
             Profile profToAdd = new Profile(prof);
