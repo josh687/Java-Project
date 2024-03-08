@@ -1,6 +1,7 @@
 package persistence;
 
 import model.*;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -53,10 +54,12 @@ class JsonWriterTest{
             TypingGame type = new TypingGame();
             NumberGame numb2 = new NumberGame();
             numb2.setLevel(3);
+            type.setLevel(2);
 
             josh.addNumGame(numb);
             josh.addNumGame(numb2);
             joe.addNumGame(numb);
+            josh.addTypeGame(type);
             prs.add(josh);
             prs.add(joe);
 
@@ -73,6 +76,7 @@ class JsonWriterTest{
             assertEquals("josh",  profs.get(0).getName());
             assertEquals("joe",  profs.get(1).getName());
             assertEquals(3, profs.get(0).getNumGames().get(1).getLevel());
+            assertEquals(2, profs.get(0).getTypeGames().get(0).getLevel());
 
         } catch (IOException e) {
             fail("Exception should not have been thrown");

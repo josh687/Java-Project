@@ -1,9 +1,9 @@
 package model;
 
-import org.json.JSONArray;
+
 import org.json.JSONObject;
 import persistence.Writable;
-import java.util.logging.Level;
+
 
 public class Game implements Writable {
     private int highscore;
