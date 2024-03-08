@@ -171,7 +171,7 @@ public class MemoryApp {
 
 
 // Displays user stats depending on what user wants
-
+    @SuppressWarnings("methodlength")
     public void accessProfiles() {
         if (profiles.isEmpty()) {
             System.out.println("play a game with a profile first");
