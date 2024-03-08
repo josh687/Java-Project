@@ -176,7 +176,10 @@ public class MemoryApp {
         if (profiles.isEmpty()) {
             System.out.println("play a game with a profile first");
         } else {
-            profiles.printProfs();
+            System.out.println(("Type in what profile you want to access"));
+            for (Profile prof : profiles.getProfiles()) {
+                System.out.println(prof.getName());
+            }
             String wantToAccessProfile = input.next();
             Profile accessedProfile = profiles.get(profiles.getProfPosition(wantToAccessProfile));
             System.out.println("\nSelect from:");
@@ -245,6 +248,7 @@ public class MemoryApp {
 
     }
 
+    //EFFECTS: Saves entire state of game to file in json
     private void save() {
         try {
             jsonWriter.open();
@@ -256,6 +260,7 @@ public class MemoryApp {
         }
     }
 
+    //EFFECTS: Loads entire state of game from jsonfile
     private void access() {
         try {
             profiles = jsonReader.read();

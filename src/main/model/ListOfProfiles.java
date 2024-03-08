@@ -49,12 +49,7 @@ public class ListOfProfiles implements Writable {
         return -1;
     }
 
-    public void printProfs() {
-        System.out.println(("Type in what profile you want to access"));
-        for (Profile prof : profileList) {
-            System.out.println(prof.getName());
-        }
-    }
+
 
     //REQUIRES: prof is in the list
     //returns profile in the position of i
@@ -62,7 +57,7 @@ public class ListOfProfiles implements Writable {
         return (profileList.get(i));
     }
 
-
+    //EFFECTS: puts list of profiles to json
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
