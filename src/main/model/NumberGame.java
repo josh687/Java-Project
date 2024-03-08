@@ -27,13 +27,14 @@ public class NumberGame extends Game {
     }
 
 
-
+    //EFFECTS: Returns upper bound for random number based on level
     private int getMax() {
         double max = Math.pow(10,super.getLevel());
         int intmax = (int)max;
         return intmax;
     }
 
+    //EFFECTS: Returns lower bound for random number based on level
     private int getMin() {
         double min = Math.pow(10,super.getLevel() - 1);
         int intmin = (int)min;

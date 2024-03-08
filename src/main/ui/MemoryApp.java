@@ -1,23 +1,41 @@
 package ui;
 
+
+import model.ListOfProfiles;
 import model.NumberGame;
 import model.Profile;
+import persistence.JsonReader;
+import persistence.JsonWriter;
+
 import model.TypingGame;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 
+
+
+
+
+
+
 public class MemoryApp {
+    private static final String JSON_STORE = "./data/workroom.json";
     private NumberGame game;
     private Scanner input;
     private TypingGame typer;
-    private ArrayList<Profile> profiles;
+    private ListOfProfiles profiles;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
-    // some code from TellerApp from CPSC 210
+
+    // some code from CPSC 210
 
     //Runs the application
     public MemoryApp() {
+
         runGame();
     }
 
@@ -55,6 +73,10 @@ public class MemoryApp {
             playTypingGame();
         } else if (command.equals("a")) {
             accessProfiles();
+        } else if (command.equals("s")) {
+            save();
+        } else if (command.equals("l")) {
+            access();
         } else {
             System.out.println("Selection not valid...");
         }
@@ -66,7 +88,9 @@ public class MemoryApp {
         input = new Scanner(System.in);
         input.useDelimiter("\n");
         typer = new TypingGame();
-        profiles = new ArrayList<>();
+        profiles = new ListOfProfiles();
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
     }
 
     private void displayMenu() {
@@ -74,6 +98,8 @@ public class MemoryApp {
         System.out.println("\tp -> Play Game");
         System.out.println("\tt -> Play typing Game");
         System.out.println("\ta -> Access profiles");
+        System.out.println("\ts -> Save all");
+        System.out.println("\tl -> Load previus save");
         System.out.println("\tq -> quit");
     }
 
@@ -82,7 +108,7 @@ public class MemoryApp {
     private void playTypingGame() {
         String scen = typer.getScentence();
         System.out.println(scen);
-        printAfterLevelSecondsTyper();
+        //printAfterLevelSecondsTyper();
 
         String in = input.next();
         if (scen.equals(in)) {
@@ -100,7 +126,7 @@ public class MemoryApp {
     private void playGame() {
         int rand = game.getNumForLevel();
         System.out.println(rand);
-        printAfterLevelSeconds();
+        //printAfterLevelSeconds();
         int num = input.nextInt();
         if (num == rand) {
             game.nextLevel();
@@ -145,19 +171,14 @@ public class MemoryApp {
 
 
 // Displays user stats depending on what user wants
-    @SuppressWarnings("methodlength")
+
     public void accessProfiles() {
-
-
         if (profiles.isEmpty()) {
             System.out.println("play a game with a profile first");
         } else {
-            System.out.println(("Type in what profile you want to access"));
-            for (Profile prof : profiles) {
-                System.out.println(prof.getName());
-            }
+            profiles.printProfs();
             String wantToAccessProfile = input.next();
-            Profile accessedProfile = profiles.get(getProfPosition(wantToAccessProfile));
+            Profile accessedProfile = profiles.get(profiles.getProfPosition(wantToAccessProfile));
             System.out.println("\nSelect from:");
             System.out.println("\th -> get High Scores");
             System.out.println("\tv -> view all games scores");
@@ -185,8 +206,8 @@ public class MemoryApp {
         System.out.println("your score was " + typer.getLevel());
         System.out.println("Enter In profile to add game to");
         String prof = input.next();
-        if (getProfPosition(prof) >= 0) {
-            Profile profToAdd = profiles.get(getProfPosition(prof));
+        if (profiles.getProfPosition(prof) >= 0) {
+            Profile profToAdd = profiles.get(profiles.getProfPosition(prof));
             profToAdd.addTypeGame(typer);
             profToAdd.newHighScoreType(typer.getLevel());
             typer = new TypingGame();
@@ -208,8 +229,8 @@ public class MemoryApp {
         System.out.println("your score was " + game.getLevel());
         System.out.println("Enter In profile to add game to");
         String prof = input.next();
-        if (getProfPosition(prof) >= 0) {
-            Profile profToAdd = profiles.get(getProfPosition(prof));
+        if (profiles.getProfPosition(prof) >= 0) {
+            Profile profToAdd = profiles.get(profiles.getProfPosition(prof));
             profToAdd.addNumGame(game);
             profToAdd.newHighScoreNum(game.getLevel());
             game = new NumberGame();
@@ -224,18 +245,31 @@ public class MemoryApp {
 
     }
 
-    //Finds where in the list of profile a peticular profile is, returns -1 if there is no profile.
-    public int getProfPosition(String name) {
-        int count = 0;
-        for (Profile prof : profiles) {
-            count++;
-            if (name.equals(prof.getName())) {
-                return count - 1;
-            }
+    private void save() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(profiles);
+            jsonWriter.close();
+            System.out.println("Saved profiles to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
         }
-        return -1;
+    }
+
+    private void access() {
+        try {
+            profiles = jsonReader.read();
+            System.out.println("Loaded "  + " from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
+        }
     }
 }
+
+
+
+
+
 
 
 

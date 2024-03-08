@@ -1,6 +1,11 @@
 package model;
 
-public class Game {
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+import java.util.logging.Level;
+
+public class Game implements Writable {
     private int highscore;
     private int level;
 
@@ -39,4 +44,23 @@ public class Game {
     public int getLevel() {
         return level;
     }
+
+
+    //EFFECTS: sets level to i
+    public void setLevel(int i) {
+        level = i;
+    }
+
+
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("Highscore", highscore);
+        json.put("Level", level);
+        return json;
+    }
+
+
+
 }
