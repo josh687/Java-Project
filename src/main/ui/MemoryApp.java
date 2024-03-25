@@ -8,6 +8,8 @@ import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import model.TypingGame;
+
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -16,12 +18,7 @@ import java.util.Scanner;
 
 
 
-
-
-
-
-
-public class MemoryApp {
+public class MemoryApp extends JFrame {
     private static final String JSON_STORE = "./data/workroom.json";
     private NumberGame game;
     private Scanner input;
@@ -35,8 +32,10 @@ public class MemoryApp {
 
     //Runs the application
     public MemoryApp() {
+        super("memory App");
 
-        runGame();
+//        runGame();
+        init();
     }
 
 
