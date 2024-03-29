@@ -78,14 +78,15 @@ public class GameUI extends JFrame {
     private void loadTabs() {
         JPanel homeTab = new HomeTab(this);
         JPanel gameTab = new GameTab(this);
+        JPanel profileTab = new ProfilesTab(this);
 //        JPanel reportTab = new ProfilesTab(this);
 
         sidebar.add(homeTab, HOME_TAB_INDEX);
         sidebar.setTitleAt(HOME_TAB_INDEX, "Home");
         sidebar.add(gameTab, GAMES_TAB_INDEX);
         sidebar.setTitleAt(GAMES_TAB_INDEX, "Games");
-//        sidebar.add(reportTab, PROFILES_TAB_INDEX);
-//        sidebar.setTitleAt(PROFILES_TAB_INDEX, "Profiles");
+        sidebar.add(profileTab, PROFILES_TAB_INDEX);
+        sidebar.setTitleAt(PROFILES_TAB_INDEX, "Profiles");
     }
 
     //EFFECTS: returns sidebar of this UI

@@ -243,6 +243,7 @@ public class GameTab extends Tab {
                     profToAdd.newHighScoreType(typer.getLevel());
                     typer = new TypingGame();
                     removeAllPanels();
+                    placeHomeButtons();
 
 
                 } else {
