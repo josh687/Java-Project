@@ -7,14 +7,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import model.ListOfProfiles;
 import model.NumberGame;
 import model.Profile;
 
 public class GameTab extends Tab {
-
-
+    
     private JLabel greeting;
     private NumberGame numgame;
     private TypingGame typer;
@@ -80,48 +82,67 @@ public class GameTab extends Tab {
     }
 
     @SuppressWarnings("methodlength")
+
     public void playNumberGame() {
         int rand = numgame.getNumForLevel();
         gameout = new JLabel(String.valueOf(rand), JLabel.CENTER);
         gameout.setSize(WIDTH, HEIGHT / 3);
         this.add(gameout);
 
-        input = new JTextField(15);  // Create the JTextField
 
-        JButton submitButton = new JButton("Submit");  // Create a button to submit the input
-        submitButton.addActionListener(new ActionListener() {
+        Timer timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int num = Integer.parseInt(input.getText());  // Read the value from the JTextField
-                if (num == rand) {
-                    numgame.nextLevel();
-                    removeAllPanels();
-                    Container parent = gameout.getParent();
-                    parent.remove(gameout);
-                    parent.validate();
-                    parent.repaint();
-                    playNumberGame();
-                } else {
-                    removeAllPanels();
-                    Container parent = gameout.getParent();
-                    parent.remove(gameout);
-                    parent.validate();
-                    parent.repaint();
-                    looseNumberGame();
-                    
-                }
+                gameout.setVisible(false);
+                input = new JTextField(15);
+                JButton submit = new JButton("Submit");
+
+                submit.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int num = Integer.parseInt(input.getText());
+                        if (num == rand) {
+                            numgame.nextLevel();
+                            removeAllPanels();
+                            Container parent = gameout.getParent();
+                            parent.remove(gameout);
+                            parent.validate();
+                            parent.repaint();
+                            playNumberGame();
+                        } else {
+                            removeAllPanels();
+                            Container parent = gameout.getParent();
+                            parent.remove(gameout);
+                            parent.validate();
+                            parent.repaint();
+                            looseNumberGame();
+                        }
+                    }
+                });
+
+                JPanel inputPanel = new JPanel();
+                inputPanel.add(new JLabel("Enter the number:"));
+                inputPanel.add(input);
+                inputPanel.add(submit);
+
+
+                GameTab.this.add(inputPanel);
+                GameTab.this.revalidate();
+                GameTab.this.repaint();
             }
         });
 
-        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
-        inputPanel.add(new JLabel("Enter the number:"));
-        inputPanel.add(input);
-        inputPanel.add(submitButton);
+        timer.setRepeats(false);
+        timer.start();
+    }
 
-        this.add(inputPanel);
-          //  looseGameNumber();
 
-        //}
+    private void removeButton(JLabel but) {
+        Container parent = but.getParent();
+        parent.remove(but);
+        parent.validate();
+        parent.repaint();
+
     }
 
     private void removeAllPanels() {
@@ -139,9 +160,9 @@ public class GameTab extends Tab {
     public void looseNumberGame() {
 
 
-        input = new JTextField(15);  // Create the JTextField
+        input = new JTextField(15);
 
-        JButton submitButton = new JButton("Submit");  // Create a button to submit the input
+        JButton submitButton = new JButton("Submit");
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -168,13 +189,13 @@ public class GameTab extends Tab {
             }
         });
 
-        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
+        JPanel inputPanel = new JPanel();
         inputPanel.add(new JLabel("Enter the profile to add the game to"));
         inputPanel.add(input);
         inputPanel.add(submitButton);
 
         this.add(inputPanel);
-        
+
     }
 
 
@@ -184,43 +205,51 @@ public class GameTab extends Tab {
         gameout = new JLabel(rando, JLabel.CENTER);
         gameout.setSize(WIDTH, HEIGHT / 3);
         this.add(gameout);
-
-        input = new JTextField(15);  // Create the JTextField
-
-        JButton submitButton = new JButton("Submit");  // Create a button to submit the input
-        submitButton.addActionListener(new ActionListener() {
+        gameout.setVisible(true);
+        Timer timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String in = (input.getText());  // Read the value from the JTextField
-                if (in.equals(rando)) {
-                    typer.nextLevel();
-                    removeAllPanels();
-                    Container parent = gameout.getParent();
-                    parent.remove(gameout);
-                    parent.validate();
-                    parent.repaint();
-                    playTypingGame();
-                } else {
-                    removeAllPanels();
-                    Container parent = gameout.getParent();
-                    parent.remove(gameout);
-                    parent.validate();
-                    parent.repaint();
-                    looseTypingGame();
+                gameout.setVisible(false);
 
-                }
+
+                input = new JTextField(15);  // Create the JTextField
+                JButton submit = new JButton("Submit");  // Create a button to submit the input
+                submit.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String in = (input.getText());  // Read the value from the JTextField
+                        if (in.equals(rando)) {
+                            typer.nextLevel();
+                            removeAllPanels();
+                            Container parent = gameout.getParent();
+                            parent.remove(gameout);
+                            parent.validate();
+                            parent.repaint();
+                            playTypingGame();
+                        } else {
+                            removeAllPanels();
+                            Container parent = gameout.getParent();
+                            parent.remove(gameout);
+                            parent.validate();
+                            parent.repaint();
+                            looseTypingGame();
+                        }
+                    }
+                });
+                JPanel inputPanel = new JPanel();
+                inputPanel.add(new JLabel("Enter the number:"));
+                inputPanel.add(input);
+                inputPanel.add(submit);
+                GameTab.this.add(inputPanel);
+                GameTab.this.revalidate();
+                GameTab.this.repaint();
+                //  looseGameNumber();
+
+                //}
             }
         });
-
-        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
-        inputPanel.add(new JLabel("Enter the number:"));
-        inputPanel.add(input);
-        inputPanel.add(submitButton);
-
-        this.add(inputPanel);
-        //  looseGameNumber();
-
-        //}
+        timer.setRepeats(false);
+        timer.start();
     }
 
 
@@ -267,15 +296,6 @@ public class GameTab extends Tab {
         this.add(inputPanel);
 
     }
-
-
-
-
-
-
-        
-
-
-
-
 }
+
+
