@@ -40,7 +40,8 @@ public class GameUI extends JFrame {
     //MODIFIES: this
     //EFFECTS: creates SmartHomeUI, loads SmartHome appliances, displays sidebar and tabs
     public GameUI() {
-        super("SmartHome Console");
+
+        super("Memory Game App");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,7 +106,7 @@ public class GameUI extends JFrame {
             jsonWriter.open();
             jsonWriter.write(profiles);
             jsonWriter.close();
-            System.out.println("Saved profiles to " + JSON_STORE);
+
         } catch (FileNotFoundException e) {
             System.out.println("Unable to write to file: " + JSON_STORE);
         }

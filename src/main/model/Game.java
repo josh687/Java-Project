@@ -21,6 +21,7 @@ public class Game implements Writable {
     public void resetGame() {
         highscore = 0;
         level = 1;
+        EventLog.getInstance().logEvent(new Event("Game lost"));
     }
 
     public void resetLevel() {
@@ -38,6 +39,7 @@ public class Game implements Writable {
     public void newHighscore() {
         if (level > highscore) {
             highscore = level;
+            EventLog.getInstance().logEvent(new Event("new highscore set at " + highscore));
         }
     }
 
@@ -59,6 +61,7 @@ public class Game implements Writable {
         json.put("Highscore", highscore);
         json.put("Level", level);
         return json;
+
     }
 
 

@@ -29,12 +29,16 @@ public class Profile implements Writable {
     //EFFECTS; adds typing game to list of profiles Number games
     public void addNumGame(NumberGame game) {
         numGames.add(game);
+        EventLog.getInstance().logEvent(new Event("added Number game to "
+                + this.getName() + "with score " + game.getHighScore()));
     }
 
     //MODIFIES:THIS
     //EFFECTS; adds typing game to list of profiles typing games
     public void addTypeGame(TypingGame game) {
         typeGames.add(game);
+        EventLog.getInstance().logEvent(new Event("added Typing game to "
+                + this.getName() + "with score " + game.getHighScore()));
     }
 
     //MODIFIES: This
@@ -42,6 +46,8 @@ public class Profile implements Writable {
     public void newHighScoreNum(int val) {
         if (val > numHighScore) {
             numHighScore = val;
+            EventLog.getInstance().logEvent(new Event("new highscore" + numHighScore));
+
         }
     }
 
@@ -50,6 +56,7 @@ public class Profile implements Writable {
     public void newHighScoreType(int val) {
         if (val > typeHighScore) {
             typeHighScore = val;
+            EventLog.getInstance().logEvent(new Event("new highscore" + typeHighScore));
         }
     }
 

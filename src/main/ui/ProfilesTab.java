@@ -39,19 +39,50 @@ public class ProfilesTab extends Tab {
         placeHomeButtons();
     }
 
-
+    @SuppressWarnings("methodlength")
     public void placeHomeButtons() {
         JButton b1 = new JButton("acess Profiles");
+        JButton b3 = new JButton("Delete Profile");
+
         JPanel buttonRow = formatButtonRow(b1);
+        buttonRow.add(b3);
         buttonRow.setSize(WIDTH, HEIGHT / 6);
         b1.setVisible(true);
         b1.setEnabled(true);
 
         b1.addActionListener(e -> {
-
+            removeAllPanels();
             b1.setVisible(false);
             b1.setEnabled(false);
-            acessProfiles();
+            b3.setVisible(false);
+            b3.setEnabled(false);
+            ListOfProfiles profs = getController().getListOfProfiles();
+            if (profs.isEmpty()) {
+
+                placeHomeButtons();
+
+            } else {
+                acessProfiles();
+            }
+
+        });
+
+
+
+        b3.addActionListener(e -> {
+            removeAllPanels();
+            ListOfProfiles profs = getController().getListOfProfiles();
+            b1.setVisible(false);
+            b1.setEnabled(false);
+            b3.setVisible(false);
+            b3.setEnabled(false);
+            if (profs.isEmpty()) {
+
+                placeHomeButtons();
+
+            } else {
+                deleteProfile();
+            }
 
         });
         this.add(buttonRow);
@@ -63,15 +94,13 @@ public class ProfilesTab extends Tab {
         String lop = "";
         for (Profile prof : profiles.getProfiles()) {
             lop = lop + "\n" + prof.getName();
-
         }
         profs = new JLabel(lop, JLabel.CENTER);
         profs.setSize(WIDTH, HEIGHT / 3);
         this.add(profs);
-
         input = new JTextField(15);
 
-        JButton submitButton = new JButton("Submit");  // Create a button to submit the input
+        JButton submitButton = new JButton("Submit");
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -84,18 +113,8 @@ public class ProfilesTab extends Tab {
                 parent.repaint();
                 removeAllPanels();
 
-
-
-
-
-
             }
         });
-
-
-
-
-
         JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
         inputPanel.add(new JLabel("profile to acess"));
         inputPanel.add(input);
@@ -105,6 +124,48 @@ public class ProfilesTab extends Tab {
         this.add(inputPanel);
     }
 
+
+    @SuppressWarnings("methodlength")
+    public void deleteProfile() {
+
+        profiles = getController().getListOfProfiles();
+        String lop = "";
+        for (Profile prof : profiles.getProfiles()) {
+            lop = lop + "\n" + prof.getName();
+        }
+        profs = new JLabel(lop, JLabel.CENTER);
+        profs.setSize(WIDTH, HEIGHT / 3);
+        this.add(profs);
+        input = new JTextField(15);
+
+        JButton submitButton = new JButton("enter In Profile To Delete");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String wantToAccessProfile = (input.getText());
+                accessedProfile = profiles.get(profiles.getProfPosition(wantToAccessProfile));
+                profiles.deleteProfile(accessedProfile);
+
+                Container parent = profs.getParent();
+                parent.remove(profs);
+                parent.validate();
+                parent.repaint();
+                removeAllPanels();
+                placeHomeButtons();
+
+            }
+        });
+        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
+        inputPanel.add(new JLabel("profile to acess"));
+        inputPanel.add(input);
+
+        inputPanel.add(submitButton);
+
+        this.add(inputPanel);
+
+    }
+
+    @SuppressWarnings("methodlength")
     public void displayScores() {
         JLabel slec = new JLabel("The Typing high score for this profile is: "
                 +  accessedProfile.getTypeHighScore());

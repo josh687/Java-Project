@@ -84,6 +84,7 @@ public class GameTab extends Tab {
     @SuppressWarnings("methodlength")
 
     public void playNumberGame() {
+
         int rand = numgame.getNumForLevel();
         gameout = new JLabel(String.valueOf(rand), JLabel.CENTER);
         gameout.setSize(WIDTH, HEIGHT / 3);
@@ -159,7 +160,6 @@ public class GameTab extends Tab {
     @SuppressWarnings("methodlength")
     public void looseNumberGame() {
 
-
         input = new JTextField(15);
 
         JButton submitButton = new JButton("Submit");
@@ -172,7 +172,7 @@ public class GameTab extends Tab {
                     Profile profToAdd = profiles.get(profiles.getProfPosition(prof));
                     profToAdd.addNumGame(numgame);
                     profToAdd.newHighScoreNum(numgame.getLevel());
-                    numgame = new NumberGame();
+                    numgame.resetGame();
                     removeAllPanels();
 
 
@@ -183,14 +183,14 @@ public class GameTab extends Tab {
                     profiles.add(profToAdd);
                     removeAllPanels();
 
-                    numgame = new NumberGame();
+                    numgame.resetGame();
                     placeHomeButtons();
                 }
             }
         });
 
         JPanel inputPanel = new JPanel();
-        inputPanel.add(new JLabel("Enter the profile to add the game to"));
+        inputPanel.add(new JLabel("Game over!!!       Enter the profile to add the game to"));
         inputPanel.add(input);
         inputPanel.add(submitButton);
 
@@ -201,6 +201,7 @@ public class GameTab extends Tab {
 
     @SuppressWarnings("methodlength")
     public void playTypingGame() {
+
         String rando = typer.getScentence();
         gameout = new JLabel(rando, JLabel.CENTER);
         gameout.setSize(WIDTH, HEIGHT / 3);
@@ -257,6 +258,10 @@ public class GameTab extends Tab {
     @SuppressWarnings("methodlength")
     public void looseTypingGame() {
 
+        setBackground(Color.red);
+        JLabel gameOver = new JLabel("GameOver!");
+        gameOver.setSize(WIDTH, HEIGHT / 3);
+
 
         input = new JTextField(15);  // Create the JTextField
 
@@ -270,8 +275,9 @@ public class GameTab extends Tab {
                     Profile profToAdd = profiles.get(profiles.getProfPosition(prof));
                     profToAdd.addTypeGame(typer);
                     profToAdd.newHighScoreType(typer.getLevel());
-                    typer = new TypingGame();
+                    typer.resetGame();
                     removeAllPanels();
+                    removeButton(gameOver);
                     placeHomeButtons();
 
 
@@ -281,19 +287,24 @@ public class GameTab extends Tab {
                     profToAdd.newHighScoreType(typer.getLevel());
                     profiles.add(profToAdd);
                     removeAllPanels();
-
-                    typer = new TypingGame();
+                    removeButton(gameOver);
+                    typer.resetGame();
                     placeHomeButtons();
                 }
             }
         });
 
         JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
+        inputPanel.add(gameOver);
         inputPanel.add(new JLabel("Enter the profile to add the game to"));
         inputPanel.add(input);
+
         inputPanel.add(submitButton);
 
+
         this.add(inputPanel);
+
+
 
     }
 }

@@ -4,6 +4,7 @@ import ui.GameUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowListener;
 
 public abstract class Tab extends JPanel {
 
@@ -27,5 +28,6 @@ public abstract class Tab extends JPanel {
     public GameUI getController() {
         return controller;
     }
+
 
 }

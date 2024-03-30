@@ -30,6 +30,8 @@ public class ListOfProfiles implements Writable {
     //adds profile to list
     public void add(Profile prof) {
         profileList.add(prof);
+        EventLog.getInstance().logEvent(new Event("added profile" + prof.getName()));
+
     }
 
     public String getName() {
@@ -50,6 +52,12 @@ public class ListOfProfiles implements Writable {
     }
 
 
+    public void deleteProfile(Profile prof) {
+        profileList.remove(prof);
+        EventLog.getInstance().logEvent(new Event("removed profile" + prof.getName()));
+    }
+
+
 
     //REQUIRES: prof is in the list
     //returns profile in the position of i
@@ -63,11 +71,14 @@ public class ListOfProfiles implements Writable {
         JSONObject json = new JSONObject();
         json.put("ListOfProfiles", name);
         json.put("profiles", profilesToJson());
+        EventLog.getInstance().logEvent(new Event("saved profiles"));
         return json;
+
     }
 
     // EFFECTS: returns things in this workroom as a JSON array
     private JSONArray profilesToJson() {
+        EventLog.getInstance().logEvent(new Event("loaded profiles"));
         JSONArray jsonArray = new JSONArray();
 
         for (Profile p : profileList) {
