@@ -5,16 +5,25 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import model.ListOfProfiles;
+import persistence.JsonReader;
+import persistence.JsonWriter;
+
+import model.TypingGame;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
 public class HomeTab extends Tab {
-
-
+    private ListOfProfiles profiles;
+    private static final String JSON_STORE = "./data/workroom.json";
     private JLabel greeting;
+
 
     //EFFECTS: constructs a home tab for console with buttons and a greeting
     public HomeTab(GameUI controller) {
@@ -36,42 +45,28 @@ public class HomeTab extends Tab {
 
     //EFFECTS: creates Arrive and Leave buttons that change greeting message when clicked
     private void placeHomeButtons() {
-        JButton b1 = new JButton("Play Game");
-        JButton b2 = new JButton("GoToProfiles");
+        JButton b1 = new JButton("Save profiles");
+        JButton b2 = new JButton("Load Profiles");
 
         JPanel buttonRow = formatButtonRow(b1);
         buttonRow.add(b2);
         buttonRow.setSize(WIDTH, HEIGHT / 6);
 
         b1.addActionListener(e -> {
-            getController().getTabbedPane().setSelectedIndex(GameUI.GAMES_TAB_INDEX);
+            getController().saveStuff();
+
 
         });
 
         b2.addActionListener(e -> {
-            getController().getTabbedPane().setSelectedIndex(GameUI.PROFILES_TAB_INDEX);
+            getController().accessStuff();
+
 
         });
 
         this.add(buttonRow);
     }
 
-//    //EFFECTS: constructs a status button that switches to the report tab on the console
-//    private void placeStatusButton() {
-//        JPanel statusBlock = new JPanel();
-//        JButton statusButton = new JButton(ButtonNames.GO_TO_REPORT.getValue());
-//        statusBlock.add(formatButtonRow(statusButton));
-//
-//        statusButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                String buttonPressed = e.getActionCommand();
-//                if (buttonPressed.equals(ButtonNames.GO_TO_REPORT.getValue())) {
-//                    getController().getTabbedPane().setSelectedIndex(SmartHomeUI.REPORT_TAB_INDEX);
-//                }
-//            }
-//        })
-//
-//        this.add(statusBlock);
-//    }
+
+
 }

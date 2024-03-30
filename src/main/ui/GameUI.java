@@ -47,6 +47,8 @@ public class GameUI extends JFrame {
         profiles = new ListOfProfiles();
         numgame = new NumberGame();
         typer = new TypingGame();
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
 
 
 
@@ -92,6 +94,30 @@ public class GameUI extends JFrame {
     //EFFECTS: returns sidebar of this UI
     public JTabbedPane getTabbedPane() {
         return sidebar;
+    }
+
+    public void setLOP(ListOfProfiles lop) {
+        this.profiles = lop;
+    }
+
+    public void saveStuff() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(profiles);
+            jsonWriter.close();
+            System.out.println("Saved profiles to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    public void accessStuff() {
+        try {
+            profiles = jsonReader.read();
+            System.out.println("Loaded "  + " from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
+        }
     }
 
 }
