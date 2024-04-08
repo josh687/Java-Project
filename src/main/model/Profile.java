@@ -46,7 +46,7 @@ public class Profile implements Writable {
     public void newHighScoreNum(int val) {
         if (val > numHighScore) {
             numHighScore = val;
-            EventLog.getInstance().logEvent(new Event("new highscore" + numHighScore));
+            EventLog.getInstance().logEvent(new Event("new Number highscore" + numHighScore));
 
         }
     }
@@ -56,7 +56,7 @@ public class Profile implements Writable {
     public void newHighScoreType(int val) {
         if (val > typeHighScore) {
             typeHighScore = val;
-            EventLog.getInstance().logEvent(new Event("new highscore" + typeHighScore));
+            EventLog.getInstance().logEvent(new Event("new Typing highscore" + typeHighScore));
         }
     }
 
