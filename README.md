@@ -19,4 +19,16 @@ I would like to add a list of games played and I would like to add games to a **
 - *user Story for Viewing list y* <br>
 I would like to see a list of my previous games results for a given game.
 - I would like to see my highscore for the game
-- 
+
+
+
+
+"Phase 4: Task 2" 
+- new highscore set at "number" for a new highscore
+- added profile "profile name" for adding a profile
+- removed profile "profile name" for removing a profile
+- added score to profile
+- saved profiles
+- loaded profiles
+- lost game
+

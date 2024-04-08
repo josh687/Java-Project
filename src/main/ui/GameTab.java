@@ -258,7 +258,7 @@ public class GameTab extends Tab {
     @SuppressWarnings("methodlength")
     public void looseTypingGame() {
 
-        setBackground(Color.red);
+//        setBackground(Color.red);
         JLabel gameOver = new JLabel("GameOver!");
         gameOver.setSize(WIDTH, HEIGHT / 3);
 

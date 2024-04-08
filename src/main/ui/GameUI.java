@@ -1,14 +1,14 @@
 package ui;
 
-import model.ListOfProfiles;
+import model.*;
 
-import model.NumberGame;
-import model.TypingGame;
-import model.Profile;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import model.TypingGame;
+
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +21,7 @@ import java.util.Scanner;
 
 
 
-public class GameUI extends JFrame {
+public class GameUI extends JFrame implements WindowListener {
     public static final int HOME_TAB_INDEX = 0;
     public static final int GAMES_TAB_INDEX = 1;
     public static final int PROFILES_TAB_INDEX = 2;
@@ -60,6 +60,7 @@ public class GameUI extends JFrame {
         add(sidebar);
 
         setVisible(true);
+        addWindowListener(this);
     }
 
     //EFFECTS: returns ListOfProfiles object controlled by this UI
@@ -119,6 +120,46 @@ public class GameUI extends JFrame {
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        for (model.Event next : EventLog.getInstance()) {
+            System.out.println(next.toString() + "\n\n");
+        }
+
+
+    }
+
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 
 }

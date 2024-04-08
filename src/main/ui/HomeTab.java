@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 
 
-public class HomeTab extends Tab implements WindowListener {
+public class HomeTab extends Tab {
     private ListOfProfiles profiles;
     private static final String JSON_STORE = "./data/workroom.json";
     private JLabel greeting;
@@ -44,10 +44,7 @@ public class HomeTab extends Tab implements WindowListener {
         greeting = new JLabel("Welcome", JLabel.CENTER);
         greeting.setSize(WIDTH, HEIGHT / 3);
         this.add(greeting);
-        addWindowListener(this);
-    }
 
-    private void addWindowListener(HomeTab homeTab) {
     }
 
     //EFFECTS: creates Arrive and Leave buttons that change greeting message when clicked
@@ -79,43 +76,5 @@ public class HomeTab extends Tab implements WindowListener {
     }
 
 
-    @Override
-    public void windowOpened(WindowEvent e) {
 
-    }
-
-    @Override
-    public void windowClosing(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowClosed(WindowEvent e) {
-        for (model.Event next : EventLog.getInstance()) {
-            System.out.println(next.toString() + "\n\n");
-        }
-
-
-    }
-
-
-    @Override
-    public void windowIconified(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowDeiconified(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowActivated(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowDeactivated(WindowEvent e) {
-
-    }
 }
