@@ -1,0 +1,811 @@
+Index: src/main/ui/HomeTab.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\n\nimport javax.swing.*;\nimport java.awt.*;\nimport java.awt.event.*;\n\nimport model.EventLog;\nimport model.ListOfProfiles;\nimport persistence.JsonReader;\nimport persistence.JsonWriter;\n\nimport model.TypingGame;\n\nimport java.io.FileNotFoundException;\nimport java.io.IOException;\n\nimport javax.swing.*;\nimport java.awt.*;\nimport java.awt.event.ActionEvent;\nimport java.awt.event.ActionListener;\n\nimport static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;\n\n\npublic class HomeTab extends Tab {\n    private ListOfProfiles profiles;\n    private static final String JSON_STORE = \"./data/workroom.json\";\n    private JLabel greeting;\n\n\n    //EFFECTS: constructs a home tab for console with buttons and a greeting\n    public HomeTab(GameUI controller) {\n        super(controller);\n\n        setLayout(new GridLayout(3, 1));\n\n        placeGreeting();\n        placeHomeButtons();\n//        placeStatusButton();\n    }\n\n    //EFFECTS: creates greeting at top of console\n    private void placeGreeting() {\n        greeting = new JLabel(\"Welcome\", JLabel.CENTER);\n        greeting.setSize(WIDTH, HEIGHT / 3);\n        this.add(greeting);\n\n    }\n\n    //EFFECTS: creates Arrive and Leave buttons that change greeting message when clicked\n    private void placeHomeButtons() {\n        JButton b1 = new JButton(\"Save profiles\");\n        JButton b2 = new JButton(\"Load Profiles\");\n\n        JPanel buttonRow = formatButtonRow(b1);\n        buttonRow.add(b2);\n        buttonRow.setSize(WIDTH, HEIGHT / 6);\n\n        b1.addActionListener(e -> {\n            getController().saveStuff();\n\n\n        });\n\n        b2.addActionListener(e -> {\n            for (model.Event next : EventLog.getInstance()) {\n                System.out.println(next.toString() + \"\\n\\n\");\n            }\n            getController().accessStuff();\n\n\n\n        });\n\n        this.add(buttonRow);\n    }\n\n\n\n}
+===================================================================
+diff --git a/src/main/ui/HomeTab.java b/src/main/ui/HomeTab.java
+--- a/src/main/ui/HomeTab.java	
++++ b/src/main/ui/HomeTab.java	
+@@ -2,32 +2,20 @@
+ 
+ import javax.swing.*;
+ import java.awt.*;
+-import java.awt.event.*;
+-
+-import model.EventLog;
+-import model.ListOfProfiles;
+-import persistence.JsonReader;
+-import persistence.JsonWriter;
++import java.awt.event.ActionEvent;
++import java.awt.event.ActionListener;
+ 
+-import model.TypingGame;
+-
+-import java.io.FileNotFoundException;
+-import java.io.IOException;
+ 
+ import javax.swing.*;
+ import java.awt.*;
+ import java.awt.event.ActionEvent;
+ import java.awt.event.ActionListener;
+ 
+-import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
+-
+-
+ public class HomeTab extends Tab {
+-    private ListOfProfiles profiles;
+-    private static final String JSON_STORE = "./data/workroom.json";
++
++
+     private JLabel greeting;
+ 
+-
+     //EFFECTS: constructs a home tab for console with buttons and a greeting
+     public HomeTab(GameUI controller) {
+         super(controller);
+@@ -44,37 +32,46 @@
+         greeting = new JLabel("Welcome", JLabel.CENTER);
+         greeting.setSize(WIDTH, HEIGHT / 3);
+         this.add(greeting);
+-
+     }
+ 
+     //EFFECTS: creates Arrive and Leave buttons that change greeting message when clicked
+     private void placeHomeButtons() {
+-        JButton b1 = new JButton("Save profiles");
+-        JButton b2 = new JButton("Load Profiles");
++        JButton b1 = new JButton("Play Game");
++        JButton b2 = new JButton("GoToProfiles");
+ 
+         JPanel buttonRow = formatButtonRow(b1);
+         buttonRow.add(b2);
+         buttonRow.setSize(WIDTH, HEIGHT / 6);
+ 
+         b1.addActionListener(e -> {
+-            getController().saveStuff();
+-
++            getController().getTabbedPane().setSelectedIndex(GameUI.GAMES_TAB_INDEX);
+ 
+         });
+ 
+         b2.addActionListener(e -> {
+-            for (model.Event next : EventLog.getInstance()) {
+-                System.out.println(next.toString() + "\n\n");
+-            }
+-            getController().accessStuff();
+-
+-
++            getController().getTabbedPane().setSelectedIndex(GameUI.PROFILES_TAB_INDEX);
+ 
+         });
+ 
+         this.add(buttonRow);
+     }
+ 
+-
+-
++//    //EFFECTS: constructs a status button that switches to the report tab on the console
++//    private void placeStatusButton() {
++//        JPanel statusBlock = new JPanel();
++//        JButton statusButton = new JButton(ButtonNames.GO_TO_REPORT.getValue());
++//        statusBlock.add(formatButtonRow(statusButton));
++//
++//        statusButton.addActionListener(new ActionListener() {
++//            @Override
++//            public void actionPerformed(ActionEvent e) {
++//                String buttonPressed = e.getActionCommand();
++//                if (buttonPressed.equals(ButtonNames.GO_TO_REPORT.getValue())) {
++//                    getController().getTabbedPane().setSelectedIndex(SmartHomeUI.REPORT_TAB_INDEX);
++//                }
++//            }
++//        })
++//
++//        this.add(statusBlock);
++//    }
+ }
+\ No newline at end of file
+Index: src/main/ui/GameUI.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\n\nimport model.*;\n\nimport persistence.JsonReader;\nimport persistence.JsonWriter;\n\nimport model.TypingGame;\n\nimport java.awt.event.WindowEvent;\nimport java.awt.event.WindowListener;\nimport java.io.FileNotFoundException;\nimport java.io.IOException;\nimport java.util.concurrent.TimeUnit;\nimport java.util.ArrayList;\nimport java.util.Scanner;\n\n\nimport javax.swing.*;\nimport java.util.Scanner;\n\n\n\npublic class GameUI extends JFrame implements WindowListener {\n    public static final int HOME_TAB_INDEX = 0;\n    public static final int GAMES_TAB_INDEX = 1;\n    public static final int PROFILES_TAB_INDEX = 2;\n\n    public static final int WIDTH = 600;\n    public static final int HEIGHT = 400;\n    private JTabbedPane sidebar;\n    private static final String JSON_STORE = \"./data/workroom.json\";\n    private NumberGame numgame;\n    private Scanner input;\n    private TypingGame typer;\n    private ListOfProfiles profiles;\n    private JsonWriter jsonWriter;\n    private JsonReader jsonReader;\n\n    //MODIFIES: this\n    //EFFECTS: creates SmartHomeUI, loads SmartHome appliances, displays sidebar and tabs\n    public GameUI() {\n\n        super(\"Memory Game App\");\n        setSize(WIDTH, HEIGHT);\n        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);\n\n        profiles = new ListOfProfiles();\n        numgame = new NumberGame();\n        typer = new TypingGame();\n        jsonWriter = new JsonWriter(JSON_STORE);\n        jsonReader = new JsonReader(JSON_STORE);\n\n\n\n        sidebar = new JTabbedPane();\n        sidebar.setTabPlacement(JTabbedPane.LEFT);\n\n        loadTabs();\n        add(sidebar);\n\n        setVisible(true);\n        addWindowListener(this);\n    }\n\n    //EFFECTS: returns ListOfProfiles object controlled by this UI\n    public ListOfProfiles getListOfProfiles() {\n        return profiles;\n    }\n\n    public NumberGame getNumgame() {\n        return numgame;\n    }\n\n    public TypingGame getTypingGame() {\n        return typer;\n    }\n\n\n    //MODIFIES: this\n    //EFFECTS: adds home tab, settings tab and report tab to this UI\n    private void loadTabs() {\n        JPanel homeTab = new HomeTab(this);\n        JPanel gameTab = new GameTab(this);\n        JPanel profileTab = new ProfilesTab(this);\n//        JPanel reportTab = new ProfilesTab(this);\n\n        sidebar.add(homeTab, HOME_TAB_INDEX);\n        sidebar.setTitleAt(HOME_TAB_INDEX, \"Home\");\n        sidebar.add(gameTab, GAMES_TAB_INDEX);\n        sidebar.setTitleAt(GAMES_TAB_INDEX, \"Games\");\n        sidebar.add(profileTab, PROFILES_TAB_INDEX);\n        sidebar.setTitleAt(PROFILES_TAB_INDEX, \"Profiles\");\n    }\n\n    //EFFECTS: returns sidebar of this UI\n    public JTabbedPane getTabbedPane() {\n        return sidebar;\n    }\n\n    public void setLOP(ListOfProfiles lop) {\n        this.profiles = lop;\n    }\n\n    public void saveStuff() {\n        try {\n            jsonWriter.open();\n            jsonWriter.write(profiles);\n            jsonWriter.close();\n\n        } catch (FileNotFoundException e) {\n            System.out.println(\"Unable to write to file: \" + JSON_STORE);\n        }\n    }\n\n    public void accessStuff() {\n        try {\n            profiles = jsonReader.read();\n            System.out.println(\"Loaded \"  + \" from \" + JSON_STORE);\n        } catch (IOException e) {\n            System.out.println(\"Unable to read from file: \" + JSON_STORE);\n        }\n    }\n\n    @Override\n    public void windowOpened(WindowEvent e) {\n\n    }\n\n    @Override\n    public void windowClosing(WindowEvent e) {\n\n    }\n\n    @Override\n    public void windowClosed(WindowEvent e) {\n        for (model.Event next : EventLog.getInstance()) {\n            System.out.println(next.toString() + \"\\n\\n\");\n        }\n\n\n    }\n\n\n    @Override\n    public void windowIconified(WindowEvent e) {\n\n    }\n\n    @Override\n    public void windowDeiconified(WindowEvent e) {\n\n    }\n\n    @Override\n    public void windowActivated(WindowEvent e) {\n\n    }\n\n    @Override\n    public void windowDeactivated(WindowEvent e) {\n\n    }\n\n}
+===================================================================
+diff --git a/src/main/ui/GameUI.java b/src/main/ui/GameUI.java
+--- a/src/main/ui/GameUI.java	
++++ b/src/main/ui/GameUI.java	
+@@ -1,14 +1,14 @@
+ package ui;
+ 
+-import model.*;
++import model.ListOfProfiles;
+ 
++import model.NumberGame;
++import model.TypingGame;
++import model.Profile;
+ import persistence.JsonReader;
+ import persistence.JsonWriter;
+ 
+ import model.TypingGame;
+-
+-import java.awt.event.WindowEvent;
+-import java.awt.event.WindowListener;
+ import java.io.FileNotFoundException;
+ import java.io.IOException;
+ import java.util.concurrent.TimeUnit;
+@@ -21,7 +21,7 @@
+ 
+ 
+ 
+-public class GameUI extends JFrame implements WindowListener {
++public class GameUI extends JFrame {
+     public static final int HOME_TAB_INDEX = 0;
+     public static final int GAMES_TAB_INDEX = 1;
+     public static final int PROFILES_TAB_INDEX = 2;
+@@ -40,16 +40,13 @@
+     //MODIFIES: this
+     //EFFECTS: creates SmartHomeUI, loads SmartHome appliances, displays sidebar and tabs
+     public GameUI() {
+-
+-        super("Memory Game App");
++        super("SmartHome Console");
+         setSize(WIDTH, HEIGHT);
+         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+ 
+         profiles = new ListOfProfiles();
+         numgame = new NumberGame();
+         typer = new TypingGame();
+-        jsonWriter = new JsonWriter(JSON_STORE);
+-        jsonReader = new JsonReader(JSON_STORE);
+ 
+ 
+ 
+@@ -60,7 +57,6 @@
+         add(sidebar);
+ 
+         setVisible(true);
+-        addWindowListener(this);
+     }
+ 
+     //EFFECTS: returns ListOfProfiles object controlled by this UI
+@@ -82,15 +78,14 @@
+     private void loadTabs() {
+         JPanel homeTab = new HomeTab(this);
+         JPanel gameTab = new GameTab(this);
+-        JPanel profileTab = new ProfilesTab(this);
+ //        JPanel reportTab = new ProfilesTab(this);
+ 
+         sidebar.add(homeTab, HOME_TAB_INDEX);
+         sidebar.setTitleAt(HOME_TAB_INDEX, "Home");
+         sidebar.add(gameTab, GAMES_TAB_INDEX);
+         sidebar.setTitleAt(GAMES_TAB_INDEX, "Games");
+-        sidebar.add(profileTab, PROFILES_TAB_INDEX);
+-        sidebar.setTitleAt(PROFILES_TAB_INDEX, "Profiles");
++//        sidebar.add(reportTab, PROFILES_TAB_INDEX);
++//        sidebar.setTitleAt(PROFILES_TAB_INDEX, "Profiles");
+     }
+ 
+     //EFFECTS: returns sidebar of this UI
+@@ -98,68 +93,4 @@
+         return sidebar;
+     }
+ 
+-    public void setLOP(ListOfProfiles lop) {
+-        this.profiles = lop;
+-    }
+-
+-    public void saveStuff() {
+-        try {
+-            jsonWriter.open();
+-            jsonWriter.write(profiles);
+-            jsonWriter.close();
+-
+-        } catch (FileNotFoundException e) {
+-            System.out.println("Unable to write to file: " + JSON_STORE);
+-        }
+-    }
+-
+-    public void accessStuff() {
+-        try {
+-            profiles = jsonReader.read();
+-            System.out.println("Loaded "  + " from " + JSON_STORE);
+-        } catch (IOException e) {
+-            System.out.println("Unable to read from file: " + JSON_STORE);
+-        }
+-    }
+-
+-    @Override
+-    public void windowOpened(WindowEvent e) {
+-
+-    }
+-
+-    @Override
+-    public void windowClosing(WindowEvent e) {
+-
+-    }
+-
+-    @Override
+-    public void windowClosed(WindowEvent e) {
+-        for (model.Event next : EventLog.getInstance()) {
+-            System.out.println(next.toString() + "\n\n");
+-        }
+-
+-
+-    }
+-
+-
+-    @Override
+-    public void windowIconified(WindowEvent e) {
+-
+-    }
+-
+-    @Override
+-    public void windowDeiconified(WindowEvent e) {
+-
+-    }
+-
+-    @Override
+-    public void windowActivated(WindowEvent e) {
+-
+-    }
+-
+-    @Override
+-    public void windowDeactivated(WindowEvent e) {
+-
+-    }
+-
+ }
+\ No newline at end of file
+Index: src/main/ui/GameTab.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\n\nimport model.NumberGame;\nimport model.TypingGame;\n\nimport javax.swing.*;\nimport java.awt.*;\nimport java.awt.event.ActionEvent;\nimport java.awt.event.ActionListener;\nimport java.util.concurrent.TimeUnit;\nimport java.util.ArrayList;\nimport java.util.Scanner;\n\nimport model.ListOfProfiles;\nimport model.NumberGame;\nimport model.Profile;\n\npublic class GameTab extends Tab {\n    \n    private JLabel greeting;\n    private NumberGame numgame;\n    private TypingGame typer;\n    private JLabel gameout;\n    private JTextField input;\n    private JScrollPane yer;\n    private ListOfProfiles profiles;\n\n\n    //EFFECTS: constructs a home tab for console with buttons and a greeting\n    public GameTab(GameUI controller) {\n        super(controller);\n\n        numgame = new NumberGame();\n        typer = new TypingGame();\n\n\n        setLayout(new GridLayout(3, 1));\n\n\n        placeHomeButtons();\n    }\n\n    //EFFECTS: creates greeting at top of console\n\n\n    //EFFECTS: creates Arrive and Leave buttons that change greeting message when clicked\n    @SuppressWarnings(\"methodlength\")\n    private void placeHomeButtons() {\n        JButton b1 = new JButton(\"Play NumberGame\");\n        JButton b2 = new JButton(\"Play Typing Game\");\n\n        JPanel buttonRow = formatButtonRow(b1);\n        buttonRow.add(b2);\n        buttonRow.setSize(WIDTH, HEIGHT / 6);\n        b1.setVisible(true);\n        b2.setVisible(true);\n        b1.setEnabled(true);\n        b2.setEnabled(true);\n\n        b1.addActionListener(e -> {\n            b1.setVisible(false);\n            b2.setVisible(false);\n            b1.setEnabled(false);\n            b2.setEnabled(false);\n\n            playNumberGame();\n\n\n        });\n\n        b2.addActionListener(e -> {\n            b1.setVisible(false);\n            b2.setVisible(false);\n            b1.setEnabled(false);\n            b2.setEnabled(false);\n\n            playTypingGame();\n\n        });\n\n        this.add(buttonRow);\n    }\n\n    @SuppressWarnings(\"methodlength\")\n\n    public void playNumberGame() {\n\n        int rand = numgame.getNumForLevel();\n        gameout = new JLabel(String.valueOf(rand), JLabel.CENTER);\n        gameout.setSize(WIDTH, HEIGHT / 3);\n        this.add(gameout);\n\n\n        Timer timer = new Timer(1000, new ActionListener() {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                gameout.setVisible(false);\n                input = new JTextField(15);\n                JButton submit = new JButton(\"Submit\");\n\n                submit.addActionListener(new ActionListener() {\n                    @Override\n                    public void actionPerformed(ActionEvent e) {\n                        int num = Integer.parseInt(input.getText());\n                        if (num == rand) {\n                            numgame.nextLevel();\n                            removeAllPanels();\n                            Container parent = gameout.getParent();\n                            parent.remove(gameout);\n                            parent.validate();\n                            parent.repaint();\n                            playNumberGame();\n                        } else {\n                            removeAllPanels();\n                            Container parent = gameout.getParent();\n                            parent.remove(gameout);\n                            parent.validate();\n                            parent.repaint();\n                            looseNumberGame();\n                        }\n                    }\n                });\n\n                JPanel inputPanel = new JPanel();\n                inputPanel.add(new JLabel(\"Enter the number:\"));\n                inputPanel.add(input);\n                inputPanel.add(submit);\n\n\n                GameTab.this.add(inputPanel);\n                GameTab.this.revalidate();\n                GameTab.this.repaint();\n            }\n        });\n\n        timer.setRepeats(false);\n        timer.start();\n    }\n\n\n    private void removeButton(JLabel but) {\n        Container parent = but.getParent();\n        parent.remove(but);\n        parent.validate();\n        parent.repaint();\n\n    }\n\n    private void removeAllPanels() {\n        Component[] components = this.getComponents();\n        for (Component component : components) {\n            if (component instanceof JPanel) {\n                this.remove(component);\n            }\n        }\n        this.revalidate();\n        this.repaint();\n    }\n\n    @SuppressWarnings(\"methodlength\")\n    public void looseNumberGame() {\n\n        input = new JTextField(15);\n\n        JButton submitButton = new JButton(\"Submit\");\n        submitButton.addActionListener(new ActionListener() {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                profiles = getController().getListOfProfiles();\n                String prof = (input.getText());\n                if (profiles.getProfPosition(prof) >= 0) {\n                    Profile profToAdd = profiles.get(profiles.getProfPosition(prof));\n                    profToAdd.addNumGame(numgame);\n                    profToAdd.newHighScoreNum(numgame.getLevel());\n                    numgame.resetGame();\n                    removeAllPanels();\n\n\n                } else {\n                    Profile profToAdd = new Profile(prof);\n                    profToAdd.addNumGame(numgame);\n                    profToAdd.newHighScoreNum(numgame.getLevel());\n                    profiles.add(profToAdd);\n                    removeAllPanels();\n\n                    numgame.resetGame();\n                    placeHomeButtons();\n                }\n            }\n        });\n\n        JPanel inputPanel = new JPanel();\n        inputPanel.add(new JLabel(\"Game over!!!       Enter the profile to add the game to\"));\n        inputPanel.add(input);\n        inputPanel.add(submitButton);\n\n        this.add(inputPanel);\n\n    }\n\n\n    @SuppressWarnings(\"methodlength\")\n    public void playTypingGame() {\n\n        String rando = typer.getScentence();\n        gameout = new JLabel(rando, JLabel.CENTER);\n        gameout.setSize(WIDTH, HEIGHT / 3);\n        this.add(gameout);\n        gameout.setVisible(true);\n        Timer timer = new Timer(1000, new ActionListener() {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                gameout.setVisible(false);\n\n\n                input = new JTextField(15);  // Create the JTextField\n                JButton submit = new JButton(\"Submit\");  // Create a button to submit the input\n                submit.addActionListener(new ActionListener() {\n                    @Override\n                    public void actionPerformed(ActionEvent e) {\n                        String in = (input.getText());  // Read the value from the JTextField\n                        if (in.equals(rando)) {\n                            typer.nextLevel();\n                            removeAllPanels();\n                            Container parent = gameout.getParent();\n                            parent.remove(gameout);\n                            parent.validate();\n                            parent.repaint();\n                            playTypingGame();\n                        } else {\n                            removeAllPanels();\n                            Container parent = gameout.getParent();\n                            parent.remove(gameout);\n                            parent.validate();\n                            parent.repaint();\n                            looseTypingGame();\n                        }\n                    }\n                });\n                JPanel inputPanel = new JPanel();\n                inputPanel.add(new JLabel(\"Enter the number:\"));\n                inputPanel.add(input);\n                inputPanel.add(submit);\n                GameTab.this.add(inputPanel);\n                GameTab.this.revalidate();\n                GameTab.this.repaint();\n                //  looseGameNumber();\n\n                //}\n            }\n        });\n        timer.setRepeats(false);\n        timer.start();\n    }\n\n\n\n    @SuppressWarnings(\"methodlength\")\n    public void looseTypingGame() {\n\n//        setBackground(Color.red);\n        JLabel gameOver = new JLabel(\"GameOver!\");\n        gameOver.setSize(WIDTH, HEIGHT / 3);\n\n\n        input = new JTextField(15);  // Create the JTextField\n\n        JButton submitButton = new JButton(\"Submit\");  // Create a button to submit the input\n        submitButton.addActionListener(new ActionListener() {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                profiles = getController().getListOfProfiles();\n                String prof = (input.getText());\n                if (profiles.getProfPosition(prof) >= 0) {\n                    Profile profToAdd = profiles.get(profiles.getProfPosition(prof));\n                    profToAdd.addTypeGame(typer);\n                    profToAdd.newHighScoreType(typer.getLevel());\n                    typer.resetGame();\n                    removeAllPanels();\n                    removeButton(gameOver);\n                    placeHomeButtons();\n\n\n                } else {\n                    Profile profToAdd = new Profile(prof);\n                    profToAdd.addTypeGame(typer);\n                    profToAdd.newHighScoreType(typer.getLevel());\n                    profiles.add(profToAdd);\n                    removeAllPanels();\n                    removeButton(gameOver);\n                    typer.resetGame();\n                    placeHomeButtons();\n                }\n            }\n        });\n\n        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components\n        inputPanel.add(gameOver);\n        inputPanel.add(new JLabel(\"Enter the profile to add the game to\"));\n        inputPanel.add(input);\n\n        inputPanel.add(submitButton);\n\n\n        this.add(inputPanel);\n\n\n\n    }\n}\n\n\n
+===================================================================
+diff --git a/src/main/ui/GameTab.java b/src/main/ui/GameTab.java
+--- a/src/main/ui/GameTab.java	
++++ b/src/main/ui/GameTab.java	
+@@ -7,16 +7,14 @@
+ import java.awt.*;
+ import java.awt.event.ActionEvent;
+ import java.awt.event.ActionListener;
+-import java.util.concurrent.TimeUnit;
+-import java.util.ArrayList;
+-import java.util.Scanner;
+ 
+ import model.ListOfProfiles;
+ import model.NumberGame;
+ import model.Profile;
+ 
+ public class GameTab extends Tab {
+-    
++
++
+     private JLabel greeting;
+     private NumberGame numgame;
+     private TypingGame typer;
+@@ -82,68 +80,48 @@
+     }
+ 
+     @SuppressWarnings("methodlength")
+-
+     public void playNumberGame() {
+-
+         int rand = numgame.getNumForLevel();
+         gameout = new JLabel(String.valueOf(rand), JLabel.CENTER);
+         gameout.setSize(WIDTH, HEIGHT / 3);
+         this.add(gameout);
+ 
++        input = new JTextField(15);  // Create the JTextField
+ 
+-        Timer timer = new Timer(1000, new ActionListener() {
++        JButton submitButton = new JButton("Submit");  // Create a button to submit the input
++        submitButton.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+-                gameout.setVisible(false);
+-                input = new JTextField(15);
+-                JButton submit = new JButton("Submit");
+-
+-                submit.addActionListener(new ActionListener() {
+-                    @Override
+-                    public void actionPerformed(ActionEvent e) {
+-                        int num = Integer.parseInt(input.getText());
+-                        if (num == rand) {
+-                            numgame.nextLevel();
+-                            removeAllPanels();
+-                            Container parent = gameout.getParent();
+-                            parent.remove(gameout);
+-                            parent.validate();
+-                            parent.repaint();
+-                            playNumberGame();
+-                        } else {
+-                            removeAllPanels();
+-                            Container parent = gameout.getParent();
+-                            parent.remove(gameout);
+-                            parent.validate();
+-                            parent.repaint();
+-                            looseNumberGame();
+-                        }
+-                    }
+-                });
++                int num = Integer.parseInt(input.getText());  // Read the value from the JTextField
++                if (num == rand) {
++                    numgame.nextLevel();
++                    removeAllPanels();
++                    Container parent = gameout.getParent();
++                    parent.remove(gameout);
++                    parent.validate();
++                    parent.repaint();
++                    playNumberGame();
++                } else {
++                    removeAllPanels();
++                    Container parent = gameout.getParent();
++                    parent.remove(gameout);
++                    parent.validate();
++                    parent.repaint();
++                    looseNumberGame();
++                    
++                }
++            }
++        });
+ 
+-                JPanel inputPanel = new JPanel();
+-                inputPanel.add(new JLabel("Enter the number:"));
+-                inputPanel.add(input);
+-                inputPanel.add(submit);
+-
+-
+-                GameTab.this.add(inputPanel);
+-                GameTab.this.revalidate();
+-                GameTab.this.repaint();
+-            }
+-        });
+-
+-        timer.setRepeats(false);
+-        timer.start();
+-    }
++        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
++        inputPanel.add(new JLabel("Enter the number:"));
++        inputPanel.add(input);
++        inputPanel.add(submitButton);
+ 
++        this.add(inputPanel);
++          //  looseGameNumber();
+ 
+-    private void removeButton(JLabel but) {
+-        Container parent = but.getParent();
+-        parent.remove(but);
+-        parent.validate();
+-        parent.repaint();
+-
++        //}
+     }
+ 
+     private void removeAllPanels() {
+@@ -160,9 +138,10 @@
+     @SuppressWarnings("methodlength")
+     public void looseNumberGame() {
+ 
+-        input = new JTextField(15);
+ 
+-        JButton submitButton = new JButton("Submit");
++        input = new JTextField(15);  // Create the JTextField
++
++        JButton submitButton = new JButton("Submit");  // Create a button to submit the input
+         submitButton.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+@@ -172,7 +151,7 @@
+                     Profile profToAdd = profiles.get(profiles.getProfPosition(prof));
+                     profToAdd.addNumGame(numgame);
+                     profToAdd.newHighScoreNum(numgame.getLevel());
+-                    numgame.resetGame();
++                    numgame = new NumberGame();
+                     removeAllPanels();
+ 
+ 
+@@ -183,74 +162,65 @@
+                     profiles.add(profToAdd);
+                     removeAllPanels();
+ 
+-                    numgame.resetGame();
++                    numgame = new NumberGame();
+                     placeHomeButtons();
+                 }
+             }
+         });
+ 
+-        JPanel inputPanel = new JPanel();
+-        inputPanel.add(new JLabel("Game over!!!       Enter the profile to add the game to"));
++        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
++        inputPanel.add(new JLabel("Enter the profile to add the game to"));
+         inputPanel.add(input);
+         inputPanel.add(submitButton);
+ 
+         this.add(inputPanel);
+-
++        
+     }
+ 
+ 
+     @SuppressWarnings("methodlength")
+     public void playTypingGame() {
+-
+         String rando = typer.getScentence();
+         gameout = new JLabel(rando, JLabel.CENTER);
+         gameout.setSize(WIDTH, HEIGHT / 3);
+         this.add(gameout);
+-        gameout.setVisible(true);
+-        Timer timer = new Timer(1000, new ActionListener() {
+-            @Override
+-            public void actionPerformed(ActionEvent e) {
+-                gameout.setVisible(false);
+-
+ 
+-                input = new JTextField(15);  // Create the JTextField
+-                JButton submit = new JButton("Submit");  // Create a button to submit the input
+-                submit.addActionListener(new ActionListener() {
+-                    @Override
+-                    public void actionPerformed(ActionEvent e) {
+-                        String in = (input.getText());  // Read the value from the JTextField
+-                        if (in.equals(rando)) {
+-                            typer.nextLevel();
+-                            removeAllPanels();
+-                            Container parent = gameout.getParent();
+-                            parent.remove(gameout);
+-                            parent.validate();
+-                            parent.repaint();
+-                            playTypingGame();
+-                        } else {
+-                            removeAllPanels();
+-                            Container parent = gameout.getParent();
+-                            parent.remove(gameout);
+-                            parent.validate();
+-                            parent.repaint();
+-                            looseTypingGame();
+-                        }
+-                    }
+-                });
+-                JPanel inputPanel = new JPanel();
+-                inputPanel.add(new JLabel("Enter the number:"));
+-                inputPanel.add(input);
+-                inputPanel.add(submit);
+-                GameTab.this.add(inputPanel);
+-                GameTab.this.revalidate();
+-                GameTab.this.repaint();
+-                //  looseGameNumber();
++        input = new JTextField(15);  // Create the JTextField
++
++        JButton submitButton = new JButton("Submit");  // Create a button to submit the input
++        submitButton.addActionListener(new ActionListener() {
++            @Override
++            public void actionPerformed(ActionEvent e) {
++                String in = (input.getText());  // Read the value from the JTextField
++                if (in.equals(rando)) {
++                    typer.nextLevel();
++                    removeAllPanels();
++                    Container parent = gameout.getParent();
++                    parent.remove(gameout);
++                    parent.validate();
++                    parent.repaint();
++                    playTypingGame();
++                } else {
++                    removeAllPanels();
++                    Container parent = gameout.getParent();
++                    parent.remove(gameout);
++                    parent.validate();
++                    parent.repaint();
++                    looseTypingGame();
++
++                }
++            }
++        });
++
++        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
++        inputPanel.add(new JLabel("Enter the number:"));
++        inputPanel.add(input);
++        inputPanel.add(submitButton);
++
++        this.add(inputPanel);
++        //  looseGameNumber();
+ 
+-                //}
+-            }
+-        });
+-        timer.setRepeats(false);
+-        timer.start();
++        //}
+     }
+ 
+ 
+@@ -258,10 +228,6 @@
+     @SuppressWarnings("methodlength")
+     public void looseTypingGame() {
+ 
+-//        setBackground(Color.red);
+-        JLabel gameOver = new JLabel("GameOver!");
+-        gameOver.setSize(WIDTH, HEIGHT / 3);
+-
+ 
+         input = new JTextField(15);  // Create the JTextField
+ 
+@@ -275,10 +241,8 @@
+                     Profile profToAdd = profiles.get(profiles.getProfPosition(prof));
+                     profToAdd.addTypeGame(typer);
+                     profToAdd.newHighScoreType(typer.getLevel());
+-                    typer.resetGame();
++                    typer = new TypingGame();
+                     removeAllPanels();
+-                    removeButton(gameOver);
+-                    placeHomeButtons();
+ 
+ 
+                 } else {
+@@ -287,26 +251,30 @@
+                     profToAdd.newHighScoreType(typer.getLevel());
+                     profiles.add(profToAdd);
+                     removeAllPanels();
+-                    removeButton(gameOver);
+-                    typer.resetGame();
++
++                    typer = new TypingGame();
+                     placeHomeButtons();
+                 }
+             }
+         });
+ 
+         JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
+-        inputPanel.add(gameOver);
+         inputPanel.add(new JLabel("Enter the profile to add the game to"));
+         inputPanel.add(input);
+-
+         inputPanel.add(submitButton);
+ 
+-
+         this.add(inputPanel);
+ 
++    }
+ 
+ 
+-    }
+-}
++
++
++
++
++        
++
++
+ 
+ 
++}
+\ No newline at end of file
+Index: src/main/ui/ProfilesTab.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\n\nimport model.NumberGame;\nimport model.TypingGame;\n\nimport javax.swing.*;\nimport java.awt.*;\nimport java.awt.event.ActionEvent;\nimport java.awt.event.ActionListener;\n\nimport model.ListOfProfiles;\nimport model.NumberGame;\nimport model.Profile;\n\n\npublic class ProfilesTab extends Tab {\n\n    private JLabel greeting;\n    private NumberGame numgame;\n    private TypingGame typer;\n    private JLabel profs;\n    private JTextField input;\n    private JScrollPane yer;\n    private ListOfProfiles profiles;\n    private Profile accessedProfile;\n\n\n    //EFFECTS: constructs a home tab for console with buttons and a greeting\n    public ProfilesTab(GameUI controller) {\n        super(controller);\n\n        numgame = new NumberGame();\n        typer = new TypingGame();\n\n\n        setLayout(new GridLayout(3, 1));\n\n\n        placeHomeButtons();\n    }\n\n    @SuppressWarnings(\"methodlength\")\n    public void placeHomeButtons() {\n        JButton b1 = new JButton(\"acess Profiles\");\n        JButton b3 = new JButton(\"Delete Profile\");\n\n        JPanel buttonRow = formatButtonRow(b1);\n        buttonRow.add(b3);\n        buttonRow.setSize(WIDTH, HEIGHT / 6);\n        b1.setVisible(true);\n        b1.setEnabled(true);\n\n        b1.addActionListener(e -> {\n            removeAllPanels();\n            b1.setVisible(false);\n            b1.setEnabled(false);\n            b3.setVisible(false);\n            b3.setEnabled(false);\n            ListOfProfiles profs = getController().getListOfProfiles();\n            if (profs.isEmpty()) {\n\n                placeHomeButtons();\n\n            } else {\n                acessProfiles();\n            }\n\n        });\n\n\n\n        b3.addActionListener(e -> {\n            removeAllPanels();\n            ListOfProfiles profs = getController().getListOfProfiles();\n            b1.setVisible(false);\n            b1.setEnabled(false);\n            b3.setVisible(false);\n            b3.setEnabled(false);\n            if (profs.isEmpty()) {\n\n                placeHomeButtons();\n\n            } else {\n                deleteProfile();\n            }\n\n        });\n        this.add(buttonRow);\n    }\n\n    @SuppressWarnings(\"methodlength\")\n    public void acessProfiles() {\n        profiles = getController().getListOfProfiles();\n        String lop = \"\";\n        for (Profile prof : profiles.getProfiles()) {\n            lop = lop + \"\\n\" + prof.getName();\n        }\n        profs = new JLabel(lop, JLabel.CENTER);\n        profs.setSize(WIDTH, HEIGHT / 3);\n        this.add(profs);\n        input = new JTextField(15);\n\n        JButton submitButton = new JButton(\"Submit\");\n        submitButton.addActionListener(new ActionListener() {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                String wantToAccessProfile = (input.getText());  // Read the value from the JTextField\n                accessedProfile = profiles.get(profiles.getProfPosition(wantToAccessProfile));\n                displayScores();\n                Container parent = profs.getParent();\n                parent.remove(profs);\n                parent.validate();\n                parent.repaint();\n                removeAllPanels();\n\n            }\n        });\n        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components\n        inputPanel.add(new JLabel(\"profile to acess\"));\n        inputPanel.add(input);\n\n        inputPanel.add(submitButton);\n\n        this.add(inputPanel);\n    }\n\n\n    @SuppressWarnings(\"methodlength\")\n    public void deleteProfile() {\n\n        profiles = getController().getListOfProfiles();\n        String lop = \"\";\n        for (Profile prof : profiles.getProfiles()) {\n            lop = lop + \"\\n\" + prof.getName();\n        }\n        profs = new JLabel(lop, JLabel.CENTER);\n        profs.setSize(WIDTH, HEIGHT / 3);\n        this.add(profs);\n        input = new JTextField(15);\n\n        JButton submitButton = new JButton(\"enter In Profile To Delete\");\n        submitButton.addActionListener(new ActionListener() {\n            @Override\n            public void actionPerformed(ActionEvent e) {\n                String wantToAccessProfile = (input.getText());\n                accessedProfile = profiles.get(profiles.getProfPosition(wantToAccessProfile));\n                profiles.deleteProfile(accessedProfile);\n\n                Container parent = profs.getParent();\n                parent.remove(profs);\n                parent.validate();\n                parent.repaint();\n                removeAllPanels();\n                placeHomeButtons();\n\n            }\n        });\n        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components\n        inputPanel.add(new JLabel(\"profile to acess\"));\n        inputPanel.add(input);\n\n        inputPanel.add(submitButton);\n\n        this.add(inputPanel);\n\n    }\n\n    @SuppressWarnings(\"methodlength\")\n    public void displayScores() {\n        JLabel slec = new JLabel(\"The Typing high score for this profile is: \"\n                +  accessedProfile.getTypeHighScore());\n        JLabel high = new JLabel(\"The Number high score for this profile is: \"\n                +  accessedProfile.getHighScore());\n        slec.setSize(WIDTH, HEIGHT / 3);\n        high.setSize(WIDTH, HEIGHT / 3);\n        this.add(slec);\n        this.add(high);\n        JButton back = new JButton(\"GoBack\");\n        JPanel br = formatButtonRow(back);\n        br.setSize(WIDTH, HEIGHT / 6);\n        back.setVisible(true);\n        back.addActionListener(e -> {\n\n            Container parent = back.getParent();\n            parent.remove(back);\n            parent.validate();\n            parent.repaint();\n            removeButton(slec);\n            removeButton(high);\n            removeAllPanels();\n            placeHomeButtons();\n\n        });\n        this.add(back);\n        this.add(br);\n\n\n    }\n\n    private void removeButton(JLabel but) {\n        Container parent = but.getParent();\n        parent.remove(but);\n        parent.validate();\n        parent.repaint();\n\n    }\n\n    private void removeAllPanels() {\n        Component[] components = this.getComponents();\n        for (Component component : components) {\n            if (component instanceof JPanel) {\n                this.remove(component);\n            }\n        }\n        this.revalidate();\n        this.repaint();\n    }\n\n\n\n}
+===================================================================
+diff --git a/src/main/ui/ProfilesTab.java b/src/main/ui/ProfilesTab.java
+--- a/src/main/ui/ProfilesTab.java	
++++ b/src/main/ui/ProfilesTab.java	
+@@ -1,221 +1,0 @@
+-package ui;
+-
+-import model.NumberGame;
+-import model.TypingGame;
+-
+-import javax.swing.*;
+-import java.awt.*;
+-import java.awt.event.ActionEvent;
+-import java.awt.event.ActionListener;
+-
+-import model.ListOfProfiles;
+-import model.NumberGame;
+-import model.Profile;
+-
+-
+-public class ProfilesTab extends Tab {
+-
+-    private JLabel greeting;
+-    private NumberGame numgame;
+-    private TypingGame typer;
+-    private JLabel profs;
+-    private JTextField input;
+-    private JScrollPane yer;
+-    private ListOfProfiles profiles;
+-    private Profile accessedProfile;
+-
+-
+-    //EFFECTS: constructs a home tab for console with buttons and a greeting
+-    public ProfilesTab(GameUI controller) {
+-        super(controller);
+-
+-        numgame = new NumberGame();
+-        typer = new TypingGame();
+-
+-
+-        setLayout(new GridLayout(3, 1));
+-
+-
+-        placeHomeButtons();
+-    }
+-
+-    @SuppressWarnings("methodlength")
+-    public void placeHomeButtons() {
+-        JButton b1 = new JButton("acess Profiles");
+-        JButton b3 = new JButton("Delete Profile");
+-
+-        JPanel buttonRow = formatButtonRow(b1);
+-        buttonRow.add(b3);
+-        buttonRow.setSize(WIDTH, HEIGHT / 6);
+-        b1.setVisible(true);
+-        b1.setEnabled(true);
+-
+-        b1.addActionListener(e -> {
+-            removeAllPanels();
+-            b1.setVisible(false);
+-            b1.setEnabled(false);
+-            b3.setVisible(false);
+-            b3.setEnabled(false);
+-            ListOfProfiles profs = getController().getListOfProfiles();
+-            if (profs.isEmpty()) {
+-
+-                placeHomeButtons();
+-
+-            } else {
+-                acessProfiles();
+-            }
+-
+-        });
+-
+-
+-
+-        b3.addActionListener(e -> {
+-            removeAllPanels();
+-            ListOfProfiles profs = getController().getListOfProfiles();
+-            b1.setVisible(false);
+-            b1.setEnabled(false);
+-            b3.setVisible(false);
+-            b3.setEnabled(false);
+-            if (profs.isEmpty()) {
+-
+-                placeHomeButtons();
+-
+-            } else {
+-                deleteProfile();
+-            }
+-
+-        });
+-        this.add(buttonRow);
+-    }
+-
+-    @SuppressWarnings("methodlength")
+-    public void acessProfiles() {
+-        profiles = getController().getListOfProfiles();
+-        String lop = "";
+-        for (Profile prof : profiles.getProfiles()) {
+-            lop = lop + "\n" + prof.getName();
+-        }
+-        profs = new JLabel(lop, JLabel.CENTER);
+-        profs.setSize(WIDTH, HEIGHT / 3);
+-        this.add(profs);
+-        input = new JTextField(15);
+-
+-        JButton submitButton = new JButton("Submit");
+-        submitButton.addActionListener(new ActionListener() {
+-            @Override
+-            public void actionPerformed(ActionEvent e) {
+-                String wantToAccessProfile = (input.getText());  // Read the value from the JTextField
+-                accessedProfile = profiles.get(profiles.getProfPosition(wantToAccessProfile));
+-                displayScores();
+-                Container parent = profs.getParent();
+-                parent.remove(profs);
+-                parent.validate();
+-                parent.repaint();
+-                removeAllPanels();
+-
+-            }
+-        });
+-        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
+-        inputPanel.add(new JLabel("profile to acess"));
+-        inputPanel.add(input);
+-
+-        inputPanel.add(submitButton);
+-
+-        this.add(inputPanel);
+-    }
+-
+-
+-    @SuppressWarnings("methodlength")
+-    public void deleteProfile() {
+-
+-        profiles = getController().getListOfProfiles();
+-        String lop = "";
+-        for (Profile prof : profiles.getProfiles()) {
+-            lop = lop + "\n" + prof.getName();
+-        }
+-        profs = new JLabel(lop, JLabel.CENTER);
+-        profs.setSize(WIDTH, HEIGHT / 3);
+-        this.add(profs);
+-        input = new JTextField(15);
+-
+-        JButton submitButton = new JButton("enter In Profile To Delete");
+-        submitButton.addActionListener(new ActionListener() {
+-            @Override
+-            public void actionPerformed(ActionEvent e) {
+-                String wantToAccessProfile = (input.getText());
+-                accessedProfile = profiles.get(profiles.getProfPosition(wantToAccessProfile));
+-                profiles.deleteProfile(accessedProfile);
+-
+-                Container parent = profs.getParent();
+-                parent.remove(profs);
+-                parent.validate();
+-                parent.repaint();
+-                removeAllPanels();
+-                placeHomeButtons();
+-
+-            }
+-        });
+-        JPanel inputPanel = new JPanel();  // Create a panel to hold the input components
+-        inputPanel.add(new JLabel("profile to acess"));
+-        inputPanel.add(input);
+-
+-        inputPanel.add(submitButton);
+-
+-        this.add(inputPanel);
+-
+-    }
+-
+-    @SuppressWarnings("methodlength")
+-    public void displayScores() {
+-        JLabel slec = new JLabel("The Typing high score for this profile is: "
+-                +  accessedProfile.getTypeHighScore());
+-        JLabel high = new JLabel("The Number high score for this profile is: "
+-                +  accessedProfile.getHighScore());
+-        slec.setSize(WIDTH, HEIGHT / 3);
+-        high.setSize(WIDTH, HEIGHT / 3);
+-        this.add(slec);
+-        this.add(high);
+-        JButton back = new JButton("GoBack");
+-        JPanel br = formatButtonRow(back);
+-        br.setSize(WIDTH, HEIGHT / 6);
+-        back.setVisible(true);
+-        back.addActionListener(e -> {
+-
+-            Container parent = back.getParent();
+-            parent.remove(back);
+-            parent.validate();
+-            parent.repaint();
+-            removeButton(slec);
+-            removeButton(high);
+-            removeAllPanels();
+-            placeHomeButtons();
+-
+-        });
+-        this.add(back);
+-        this.add(br);
+-
+-
+-    }
+-
+-    private void removeButton(JLabel but) {
+-        Container parent = but.getParent();
+-        parent.remove(but);
+-        parent.validate();
+-        parent.repaint();
+-
+-    }
+-
+-    private void removeAllPanels() {
+-        Component[] components = this.getComponents();
+-        for (Component component : components) {
+-            if (component instanceof JPanel) {
+-                this.remove(component);
+-            }
+-        }
+-        this.revalidate();
+-        this.repaint();
+-    }
+-
+-
+-
+-}
+\ No newline at end of file

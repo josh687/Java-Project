@@ -1,0 +1,82 @@
+Index: data/testWriterGeneralWorkroom.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\n    \"ListOfProfiles\": \"ListOfProfiles\",\n    \"profiles\": [\n        {\n            \"Typer Highscore\": 0,\n            \"typergames\": [{\n                \"Highscore\": 0,\n                \"Level\": 2\n            }],\n            \"number HighScore\": 0,\n            \"name\": \"josh\",\n            \"numbergames\": [\n                {\n                    \"Highscore\": 0,\n                    \"Level\": 1\n                },\n                {\n                    \"Highscore\": 0,\n                    \"Level\": 3\n                }\n            ]\n        },\n        {\n            \"Typer Highscore\": 0,\n            \"typergames\": [],\n            \"number HighScore\": 0,\n            \"name\": \"joe\",\n            \"numbergames\": [{\n                \"Highscore\": 0,\n                \"Level\": 1\n            }]\n        }\n    ]\n}
+===================================================================
+diff --git a/data/testWriterGeneralWorkroom.json b/data/testWriterGeneralWorkroom.json
+--- a/data/testWriterGeneralWorkroom.json	
++++ b/data/testWriterGeneralWorkroom.json	
+@@ -1,34 +1,4 @@
+ {
+-    "ListOfProfiles": "ListOfProfiles",
+-    "profiles": [
+-        {
+-            "Typer Highscore": 0,
+-            "typergames": [{
+-                "Highscore": 0,
+-                "Level": 2
+-            }],
+-            "number HighScore": 0,
+-            "name": "josh",
+-            "numbergames": [
+-                {
+-                    "Highscore": 0,
+-                    "Level": 1
+-                },
+-                {
+-                    "Highscore": 0,
+-                    "Level": 3
+-                }
+-            ]
+-        },
+-        {
+-            "Typer Highscore": 0,
+-            "typergames": [],
+-            "number HighScore": 0,
+-            "name": "joe",
+-            "numbergames": [{
+-                "Highscore": 0,
+-                "Level": 1
+-            }]
+-        }
+-    ]
++  "ListOfProfiles": "ListOfProfiles",
++  "profiles": []
+ }
+\ No newline at end of file
+Index: data/workroom.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\n    \"ListOfProfiles\": \"ListOfProfiles\",\n    \"profiles\": [\n        {\n            \"Typer Highscore\": 1,\n            \"typergames\": [{\n                \"Highscore\": 0,\n                \"Level\": 1\n            }],\n            \"number HighScore\": 0,\n            \"name\": \"frank\",\n            \"numbergames\": []\n        },\n        {\n            \"Typer Highscore\": 0,\n            \"typergames\": [],\n            \"number HighScore\": 7,\n            \"name\": \"Josh\",\n            \"numbergames\": [{\n                \"Highscore\": 0,\n                \"Level\": 1\n            }]\n        }\n    ]\n}
+===================================================================
+diff --git a/data/workroom.json b/data/workroom.json
+--- a/data/workroom.json	
++++ b/data/workroom.json	
+@@ -1,25 +1,4 @@
+ {
+     "ListOfProfiles": "ListOfProfiles",
+-    "profiles": [
+-        {
+-            "Typer Highscore": 1,
+-            "typergames": [{
+-                "Highscore": 0,
+-                "Level": 1
+-            }],
+-            "number HighScore": 0,
+-            "name": "frank",
+-            "numbergames": []
+-        },
+-        {
+-            "Typer Highscore": 0,
+-            "typergames": [],
+-            "number HighScore": 7,
+-            "name": "Josh",
+-            "numbergames": [{
+-                "Highscore": 0,
+-                "Level": 1
+-            }]
+-        }
+-    ]
++    "profiles": []
+ }
+\ No newline at end of file

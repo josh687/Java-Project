@@ -1,0 +1,25 @@
+Index: src/main/ui/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\n\n\nimport model.NumberGame;\n\npublic class Main {\n    public static void main(String[] args) {\n        MemoryApp mem = new MemoryApp();\n\n\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/ui/Main.java b/src/main/ui/Main.java
+--- a/src/main/ui/Main.java	(revision d0dcdd494cfeefb11114fc8532e8dff59c0c4ef2)
++++ b/src/main/ui/Main.java	(date 1738111008755)
+@@ -1,11 +1,12 @@
+ package ui;
+ 
+ 
+-import model.NumberGame;
++
++// run this to start
+ 
+ public class Main {
+     public static void main(String[] args) {
+-        MemoryApp mem = new MemoryApp();
++        GameUI mem = new GameUI();
+ 
+ 
+     }
