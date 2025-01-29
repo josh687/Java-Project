@@ -1,7 +1,8 @@
 package ui;
 
 
-import model.NumberGame;
+
+// run this to start
 
 public class Main {
     public static void main(String[] args) {

@@ -2,20 +2,20 @@
     "ListOfProfiles": "ListOfProfiles",
     "profiles": [
         {
-            "Typer Highscore": 0,
-            "typergames": [],
-            "number HighScore": 3,
-            "name": "josh",
-            "numbergames": [{
+            "Typer Highscore": 1,
+            "typergames": [{
                 "Highscore": 0,
-                "Level": 3
-            }]
+                "Level": 1
+            }],
+            "number HighScore": 0,
+            "name": "frank",
+            "numbergames": []
         },
         {
             "Typer Highscore": 0,
             "typergames": [],
-            "number HighScore": 1,
-            "name": "poo",
+            "number HighScore": 7,
+            "name": "Josh",
             "numbergames": [{
                 "Highscore": 0,
                 "Level": 1
